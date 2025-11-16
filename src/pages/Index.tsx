@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { DownloadCard } from "@/components/DownloadCard";
+import { RelatedItems } from "@/components/RelatedItems";
 import { Download, Sparkles, Shield, Zap } from "lucide-react";
 const Index = () => {
   const [featuredItems, setFeaturedItems] = useState<any[]>([]);
@@ -156,6 +157,13 @@ const Index = () => {
             </div>
           </div>
         </section>}
+
+      {/* All Downloads Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <RelatedItems currentItemId="" categoryIds={[]} />
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t py-12 bg-card">
