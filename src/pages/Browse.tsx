@@ -92,13 +92,14 @@ const Browse = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Browse Downloads</h1>
-          <p className="text-muted-foreground">Explore our collection of files</p>
+      <main className="container mx-auto px-4 py-12">
+        <div className="mb-10">
+          <span className="text-primary font-semibold text-sm uppercase tracking-wider">Explore</span>
+          <h1 className="text-4xl md:text-5xl font-bold mt-2 mb-3">Browse Downloads</h1>
+          <p className="text-muted-foreground text-lg">Explore our curated collection of files</p>
         </div>
 
         <CategoryFilter
@@ -109,7 +110,10 @@ const Browse = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-accent" />
+            <div className="relative">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              <div className="absolute inset-0 h-10 w-10 rounded-full border-2 border-primary/20" />
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -118,7 +122,11 @@ const Browse = () => {
             ))}
             {items.length === 0 && (
               <div className="col-span-full text-center py-20">
-                <p className="text-muted-foreground text-lg">No items found</p>
+                <div className="h-20 w-20 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
+                  <Loader2 className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <p className="text-muted-foreground text-lg font-medium">No items found</p>
+                <p className="text-sm text-muted-foreground/70 mt-1">Try adjusting your filters</p>
               </div>
             )}
           </div>
