@@ -15,8 +15,9 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Upload, X, Play, AlertCircle, Code } from "lucide-react";
+import { Upload, X, Play, AlertCircle, Code, FileUp } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
 
 const urlSchema = z.string().url("Must be a valid URL").max(500);
 const itemSchema = z.object({
@@ -48,6 +49,9 @@ export const AdminItemForm = ({ item, onSuccess, onCancel }: AdminItemFormProps)
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>(
     item?.thumbnail_url ? JSON.parse(item.thumbnail_url).filter((url: string) => url) : []
@@ -493,15 +497,145 @@ return true;`
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="download_url">Download URL (Google Drive, etc.) *</Label>
-          <Input
-            id="download_url"
-            type="url"
-            value={formData.download_url}
-            onChange={(e) => setFormData({ ...formData, download_url: e.target.value })}
-            placeholder="https://drive.google.com/..."
-            required
-          />
+          <Label htmlFor="download_url">Download File *</Label>
+          <p className="text-sm text-muted-foreground mb-2">
+            Upload a file from your computer or paste a URL (Google Drive, etc.)
+          </p>
+          
+          <div className="flex flex-col gap-3">
+            {/* File upload option */}
+            <div className="border rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <FileUp className="h-5 w-5 text-muted-foreground" />
+                <span className="font-medium">Upload from Computer</span>
+              </div>
+              
+              {selectedFile ? (
+                <div className="flex items-center gap-3 p-3 bg-muted rounded-md">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium truncate">{selectedFile.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setFormData({ ...formData, download_url: item?.download_url || "" });
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Label htmlFor="file-upload" className="cursor-pointer">
+                    <div className="flex items-center justify-center gap-2 px-4 py-6 border-2 border-dashed rounded-lg hover:bg-muted/50 transition-colors">
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        Click to select file (APK, EXE, ZIP, PDF, etc.)
+                      </span>
+                    </div>
+                  </Label>
+                  <Input
+                    id="file-upload"
+                    type="file"
+                    accept="*/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      
+                      if (file.size > 500 * 1024 * 1024) {
+                        toast.error("File size must be less than 500MB");
+                        return;
+                      }
+                      
+                      setSelectedFile(file);
+                      
+                      // Auto-detect file type
+                      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+                      if (!formData.file_type) {
+                        setFormData(prev => ({ ...prev, file_type: ext }));
+                      }
+                      
+                      // Set file size
+                      const sizeMB = file.size / (1024 * 1024);
+                      const sizeStr = sizeMB >= 1 
+                        ? `${sizeMB.toFixed(2)} MB` 
+                        : `${(file.size / 1024).toFixed(2)} KB`;
+                      setFormData(prev => ({ ...prev, file_size: sizeStr }));
+                      
+                      // Upload immediately
+                      setUploadingFile(true);
+                      setUploadProgress(10);
+                      
+                      try {
+                        const fileExt = file.name.split(".").pop();
+                        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+                        
+                        setUploadProgress(30);
+                        
+                        const { error: uploadError } = await supabase.storage
+                          .from("downloads")
+                          .upload(fileName, file);
+                        
+                        if (uploadError) throw uploadError;
+                        
+                        setUploadProgress(80);
+                        
+                        const { data: { publicUrl } } = supabase.storage
+                          .from("downloads")
+                          .getPublicUrl(fileName);
+                        
+                        setFormData(prev => ({ ...prev, download_url: publicUrl }));
+                        setUploadProgress(100);
+                        toast.success("File uploaded successfully!");
+                      } catch (error) {
+                        console.error("Upload error:", error);
+                        toast.error("Failed to upload file");
+                        setSelectedFile(null);
+                      } finally {
+                        setUploadingFile(false);
+                        setUploadProgress(0);
+                      }
+                    }}
+                    className="hidden"
+                  />
+                </div>
+              )}
+              
+              {uploadingFile && (
+                <div className="space-y-2">
+                  <Progress value={uploadProgress} className="h-2" />
+                  <p className="text-xs text-muted-foreground text-center">
+                    Uploading... {uploadProgress}%
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            {/* URL option */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 border-t" />
+              <span className="text-sm text-muted-foreground">OR</span>
+              <div className="flex-1 border-t" />
+            </div>
+            
+            <Input
+              id="download_url"
+              type="url"
+              value={formData.download_url}
+              onChange={(e) => {
+                setFormData({ ...formData, download_url: e.target.value });
+                if (e.target.value) setSelectedFile(null);
+              }}
+              placeholder="https://drive.google.com/... or any direct download URL"
+              required={!selectedFile}
+            />
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
