@@ -42,11 +42,6 @@ serve(async (req) => {
   }
 
   try {
-    const TELEGRAM_BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN");
-    if (!TELEGRAM_BOT_TOKEN) {
-      throw new Error("TELEGRAM_BOT_TOKEN is not configured");
-    }
-
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
@@ -55,6 +50,40 @@ serve(async (req) => {
     }
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    // Get bot_id from query params to identify which bot this webhook is for
+    const url = new URL(req.url);
+    const botId = url.searchParams.get("bot_id");
+
+    let TELEGRAM_BOT_TOKEN: string | null = null;
+
+    if (botId) {
+      // Fetch bot token from database
+      const { data: bot, error } = await supabase
+        .from("telegram_bots")
+        .select("bot_token, is_active")
+        .eq("id", botId)
+        .single();
+
+      if (error || !bot) {
+        throw new Error("Bot not found");
+      }
+
+      if (!bot.is_active) {
+        return new Response(JSON.stringify({ ok: true, message: "Bot is inactive" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      TELEGRAM_BOT_TOKEN = bot.bot_token;
+    } else {
+      // Fallback to env variable for backwards compatibility
+      TELEGRAM_BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN") || null;
+    }
+
+    if (!TELEGRAM_BOT_TOKEN) {
+      throw new Error("Bot token not found");
+    }
 
     // Parse the Telegram update
     const update: TelegramUpdate = await req.json();
