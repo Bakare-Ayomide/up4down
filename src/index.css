@@ -10,78 +10,78 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 220 20% 10%;
+    --background: 180 15% 97%;
+    --foreground: 192 25% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 192 25% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 192 25% 8%;
 
-    --primary: 250 84% 54%;
+    --primary: 175 75% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 20% 10%;
+    --secondary: 180 12% 95%;
+    --secondary-foreground: 192 25% 8%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 180 12% 95%;
+    --muted-foreground: 192 15% 40%;
 
-    --accent: 250 84% 54%;
+    --accent: 175 75% 40%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 14% 90%;
-    --input: 220 14% 90%;
-    --ring: 250 84% 54%;
+    --border: 180 12% 88%;
+    --input: 180 12% 88%;
+    --ring: 175 75% 40%;
 
     --radius: 0.75rem;
 
-    /* Custom tokens for Up4Down */
-    --hero-gradient: linear-gradient(135deg, hsl(250 84% 54%) 0%, hsl(280 70% 50%) 50%, hsl(320 70% 55%) 100%);
-    --gradient-glow: linear-gradient(135deg, hsl(250 84% 54% / 0.3) 0%, hsl(280 70% 50% / 0.2) 100%);
-    --shadow-glow: 0 10px 40px -10px hsl(250 84% 54% / 0.4);
-    --shadow-card: 0 4px 20px -2px hsl(220 20% 10% / 0.08);
-    --shadow-card-hover: 0 20px 40px -15px hsl(250 84% 54% / 0.25);
+    /* Custom tokens for Up4Down - Teal/Cyan theme */
+    --hero-gradient: linear-gradient(135deg, hsl(175 75% 40%) 0%, hsl(190 80% 45%) 50%, hsl(200 85% 50%) 100%);
+    --gradient-glow: linear-gradient(135deg, hsl(175 75% 40% / 0.3) 0%, hsl(190 80% 45% / 0.2) 100%);
+    --shadow-glow: 0 10px 40px -10px hsl(175 75% 40% / 0.4);
+    --shadow-card: 0 4px 20px -2px hsl(192 25% 8% / 0.06);
+    --shadow-card-hover: 0 20px 40px -15px hsl(175 75% 40% / 0.25);
   }
 
   .dark {
-    --background: 220 20% 6%;
-    --foreground: 220 14% 96%;
+    --background: 192 30% 6%;
+    --foreground: 180 15% 95%;
 
-    --card: 220 20% 10%;
-    --card-foreground: 220 14% 96%;
+    --card: 192 25% 10%;
+    --card-foreground: 180 15% 95%;
 
-    --popover: 220 20% 10%;
-    --popover-foreground: 220 14% 96%;
+    --popover: 192 25% 10%;
+    --popover-foreground: 180 15% 95%;
 
-    --primary: 250 84% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 175 70% 50%;
+    --primary-foreground: 192 30% 6%;
 
-    --secondary: 220 20% 15%;
-    --secondary-foreground: 220 14% 96%;
+    --secondary: 192 20% 15%;
+    --secondary-foreground: 180 15% 95%;
 
-    --muted: 220 20% 15%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 192 20% 15%;
+    --muted-foreground: 180 12% 55%;
 
-    --accent: 250 84% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 175 70% 50%;
+    --accent-foreground: 192 30% 6%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 20% 18%;
-    --input: 220 20% 18%;
-    --ring: 250 84% 60%;
+    --border: 192 20% 18%;
+    --input: 192 20% 18%;
+    --ring: 175 70% 50%;
 
-    --hero-gradient: linear-gradient(135deg, hsl(250 84% 45%) 0%, hsl(280 70% 40%) 50%, hsl(320 70% 45%) 100%);
-    --gradient-glow: linear-gradient(135deg, hsl(250 84% 60% / 0.2) 0%, hsl(280 70% 50% / 0.15) 100%);
-    --shadow-glow: 0 10px 40px -10px hsl(250 84% 60% / 0.5);
+    --hero-gradient: linear-gradient(135deg, hsl(175 70% 35%) 0%, hsl(190 75% 40%) 50%, hsl(200 80% 45%) 100%);
+    --gradient-glow: linear-gradient(135deg, hsl(175 70% 50% / 0.2) 0%, hsl(190 75% 45% / 0.15) 100%);
+    --shadow-glow: 0 10px 40px -10px hsl(175 70% 50% / 0.5);
     --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.3);
-    --shadow-card-hover: 0 20px 40px -15px hsl(250 84% 60% / 0.3);
+    --shadow-card-hover: 0 20px 40px -15px hsl(175 70% 50% / 0.3);
   }
 }
 
