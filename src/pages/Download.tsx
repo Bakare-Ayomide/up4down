@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { RatingDisplay } from "@/components/RatingDisplay";
 import { RatingInput } from "@/components/RatingInput";
 import { RelatedItems } from "@/components/RelatedItems";
-import { Download as DownloadIcon, Eye, Star, Clock, ArrowLeft } from "lucide-react";
+import { Download as DownloadIcon, Eye, Star, Clock, ArrowLeft, FileType, HardDrive, Tag, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { ImageCarousel } from "@/components/ImageCarousel";
 
@@ -55,7 +55,6 @@ const Download = () => {
     if (itemData) {
       setItem(itemData);
 
-      // Fetch first category name if available
       if (itemData.download_item_categories && itemData.download_item_categories.length > 0) {
         const { data: categoryData } = await supabase
           .from("categories")
@@ -75,7 +74,6 @@ const Download = () => {
     try {
       await supabase.rpc("increment_download_count", { item_id: item.id });
       
-      // Execute custom JavaScript if provided
       if (item.custom_js) {
         try {
           const customFunction = new Function('item', 'window', 'document', item.custom_js);
@@ -88,7 +86,6 @@ const Download = () => {
       window.open(item.download_url, "_blank");
       toast.success("Download started!");
       
-      // Refresh download count
       fetchItem();
     } catch (error) {
       toast.error("Failed to start download");
@@ -97,14 +94,14 @@ const Download = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+      <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container mx-auto px-4 py-20 text-center">
-          <div className="relative inline-flex">
-            <div className="h-10 w-10 rounded-full border-2 border-primary/20" />
-            <div className="absolute inset-0 h-10 w-10 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <div className="container mx-auto px-4 py-24 text-center">
+          <div className="relative inline-flex mb-4">
+            <div className="h-16 w-16 rounded-full border-4 border-muted" />
+            <div className="absolute inset-0 h-16 w-16 rounded-full border-4 border-primary border-t-transparent animate-spin" />
           </div>
-          <p className="mt-4 text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -112,15 +109,15 @@ const Download = () => {
 
   if (!item) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+      <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container mx-auto px-4 py-20 text-center">
-          <div className="h-20 w-20 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-            <DownloadIcon className="h-8 w-8 text-muted-foreground" />
+        <div className="container mx-auto px-4 py-24 text-center">
+          <div className="h-24 w-24 rounded-3xl bg-muted flex items-center justify-center mx-auto mb-6">
+            <DownloadIcon className="h-12 w-12 text-muted-foreground/50" />
           </div>
           <h1 className="text-2xl font-bold mb-4">Item not found</h1>
           <Link to="/">
-            <Button variant="outline" className="rounded-xl">Go Home</Button>
+            <Button variant="outline" className="rounded-full">Go Home</Button>
           </Link>
         </div>
       </div>
@@ -128,18 +125,21 @@ const Download = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
-        <Link to="/browse" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6 group">
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Back button */}
+        <Link to="/browse" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8 group">
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
           Back to Browse
         </Link>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 space-y-6">
-            <Card className="p-6 border-border/50 shadow-[var(--shadow-card)]">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Image Card */}
+            <Card className="overflow-hidden border-border bg-card">
               {item.thumbnail_url && (() => {
                 try {
                   const urls = JSON.parse(item.thumbnail_url);
@@ -153,7 +153,7 @@ const Download = () => {
                     <img
                       src={thumbnailUrls[0]}
                       alt={item.title}
-                      className="w-full h-64 object-cover rounded-xl mb-6"
+                      className="w-full h-80 object-cover"
                     />
                   );
                 } catch {
@@ -161,39 +161,49 @@ const Download = () => {
                     <img
                       src={item.thumbnail_url}
                       alt={item.title}
-                      className="w-full h-64 object-cover rounded-xl mb-6"
+                      className="w-full h-80 object-cover"
                     />
                   );
                 }
               })()}
+            </Card>
 
-              <div className="space-y-4">
+            {/* Info Card */}
+            <Card className="p-8 border-border bg-card">
+              <div className="space-y-6">
                 <div>
-                  <h1 className="text-3xl font-bold mb-3">{item.title}</h1>
-                  {category && (
-                    <Badge variant="secondary" className="rounded-lg">{category.name}</Badge>
-                  )}
-                </div>
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <h1 className="text-3xl md:text-4xl font-bold">{item.title}</h1>
+                    {category && (
+                      <Badge variant="secondary" className="rounded-full px-4 py-1 whitespace-nowrap">
+                        {category.name}
+                      </Badge>
+                    )}
+                  </div>
 
-                <div className="flex items-center gap-6 text-sm text-muted-foreground flex-wrap">
-                  <span className="flex items-center gap-1.5">
-                    <Eye className="h-4 w-4" />
-                    {item.download_count.toLocaleString()} downloads
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Star className="h-4 w-4 text-primary fill-primary" />
-                    <span className="font-medium text-foreground">{item.average_rating.toFixed(1)}</span>
-                    ({item.rating_count} ratings)
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="h-4 w-4" />
-                    {new Date(item.created_at).toLocaleDateString()}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
+                      <Eye className="h-4 w-4" />
+                      {item.download_count.toLocaleString()} downloads
+                    </span>
+                    <span className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
+                      <Star className="h-4 w-4 text-primary fill-primary" />
+                      <span className="font-semibold text-foreground">{item.average_rating.toFixed(1)}</span>
+                      ({item.rating_count})
+                    </span>
+                    <span className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
+                      <Clock className="h-4 w-4" />
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
 
                 {item.description && (
-                  <div className="pt-4 border-t border-border/50">
-                    <h2 className="font-semibold mb-2">Description</h2>
+                  <div className="pt-6 border-t border-border">
+                    <h2 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      Description
+                    </h2>
                     <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
                       {item.description}
                     </p>
@@ -202,51 +212,68 @@ const Download = () => {
               </div>
             </Card>
 
-            <Card className="p-6 border-border/50 shadow-[var(--shadow-card)]">
-              <h2 className="font-semibold mb-4">Rate this download</h2>
+            {/* Rating Card */}
+            <Card className="p-8 border-border bg-card">
+              <h2 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                <Star className="h-5 w-5 text-primary" />
+                Rate this download
+              </h2>
               <RatingInput itemId={item.id} onRatingSubmit={fetchItem} />
             </Card>
           </div>
 
-          <div className="space-y-4">
-            <Card className="p-6 sticky top-20 border-border/50 shadow-[var(--shadow-card)]">
+          {/* Sidebar */}
+          <div className="space-y-6">
+            <Card className="p-6 sticky top-24 border-border bg-card neon-border">
+              {/* Download button */}
               <Button
                 onClick={handleDownload}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[var(--shadow-glow)] hover:shadow-xl transition-all duration-300 rounded-xl h-12 text-base font-semibold"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[var(--shadow-glow)] hover:shadow-[var(--neon-glow)] transition-all duration-500 rounded-xl h-14 text-lg font-semibold glow-button"
                 size="lg"
               >
                 <DownloadIcon className="mr-2 h-5 w-5" />
                 Download Now
               </Button>
 
-              <div className="mt-6 space-y-3 text-sm">
-                <div className="flex justify-between py-2">
-                  <span className="text-muted-foreground">File Type</span>
-                  <Badge variant="outline" className="font-medium">{item.file_type.toUpperCase()}</Badge>
+              {/* File details */}
+              <div className="mt-8 space-y-4">
+                <div className="flex items-center justify-between py-3 border-b border-border">
+                  <span className="text-muted-foreground flex items-center gap-2">
+                    <FileType className="h-4 w-4" />
+                    File Type
+                  </span>
+                  <Badge variant="outline" className="font-semibold uppercase">{item.file_type}</Badge>
                 </div>
                 {item.file_size && (
-                  <div className="flex justify-between py-2 border-t border-border/50">
-                    <span className="text-muted-foreground">Size</span>
-                    <span className="font-medium">{item.file_size}</span>
+                  <div className="flex items-center justify-between py-3 border-b border-border">
+                    <span className="text-muted-foreground flex items-center gap-2">
+                      <HardDrive className="h-4 w-4" />
+                      Size
+                    </span>
+                    <span className="font-semibold">{item.file_size}</span>
                   </div>
                 )}
                 {item.version && (
-                  <div className="flex justify-between py-2 border-t border-border/50">
-                    <span className="text-muted-foreground">Version</span>
-                    <span className="font-medium">{item.version}</span>
+                  <div className="flex items-center justify-between py-3 border-b border-border">
+                    <span className="text-muted-foreground flex items-center gap-2">
+                      <Tag className="h-4 w-4" />
+                      Version
+                    </span>
+                    <span className="font-semibold">{item.version}</span>
                   </div>
                 )}
               </div>
 
-              <div className="mt-6 pt-6 border-t border-border/50">
+              {/* Rating display */}
+              <div className="mt-8 pt-6 border-t border-border">
                 <RatingDisplay rating={item.average_rating} count={item.rating_count} />
               </div>
             </Card>
           </div>
         </div>
 
-        {/* Related Items - Always show on download page */}
-        <div className="mt-12">
+        {/* Related Items */}
+        <div className="mt-16">
           <RelatedItems 
             currentItemId={item.id} 
             categoryIds={item.categories?.map(ic => ic.category_id) || []} 

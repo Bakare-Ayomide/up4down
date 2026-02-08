@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { DownloadCard } from "@/components/DownloadCard";
 import { RelatedItems } from "@/components/RelatedItems";
-import { Download, Sparkles, Shield, Zap, ArrowRight, Star } from "lucide-react";
+import { Download, Sparkles, Shield, Zap, ArrowRight, Star, Folder, ChevronRight } from "lucide-react";
 
 const Index = () => {
   const [featuredItems, setFeaturedItems] = useState<any[]>([]);
@@ -35,66 +35,99 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 md:py-32">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-[var(--hero-gradient)]" />
+      {/* Hero Section - Cyberpunk Style */}
+      <section className="relative overflow-hidden min-h-[90vh] flex items-center">
+        {/* Background layers */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/30" />
+        <div className="absolute inset-0 bg-grid-pattern" />
         
-        {/* Animated gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/30 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse delay-1000" />
-        
-        {/* Grid pattern */}
-        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:30px_30px]" />
+        {/* Animated orbs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-float" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/15 rounded-full blur-[120px] animate-float" style={{ animationDelay: '-3s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px]" />
         
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6 border border-white/20">
-              <Sparkles className="h-4 w-4 text-white" />
-              <span className="text-sm font-medium text-white/90">
-                Your Ultimate Download Platform
-              </span>
-            </div>
-
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 text-white leading-tight">
-              Download Anything
-              <span className="block text-white/80 mt-2">Anywhere, Anytime</span>
-            </h1>
-
-            <p className="text-xl md:text-2xl text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Access thousands of apps, software, games, videos, and more. All in one place, free for lifetime.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/browse">
-                <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-xl hover:shadow-2xl transition-all duration-300 text-lg h-14 px-8 rounded-xl font-semibold group">
-                  <Download className="mr-2 h-5 w-5" />
-                  Browse Downloads
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <a href="#features">
-                <Button size="lg" variant="outline" className="border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-lg text-white h-14 px-8 rounded-xl font-semibold">
-                  Learn More
-                </Button>
-              </a>
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-8 mt-16 pt-8 border-t border-white/10">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">10K+</div>
-                <div className="text-sm text-white/60">Downloads</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white">500+</div>
-                <div className="text-sm text-white/60">Files</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white flex items-center gap-1 justify-center">
-                  4.9 <Star className="h-5 w-5 fill-white" />
+          <div className="max-w-5xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Left content */}
+              <div className="text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-primary/20">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">
+                    Ultimate Download Hub
+                  </span>
                 </div>
-                <div className="text-sm text-white/60">Rating</div>
+
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1] tracking-tight">
+                  Download
+                  <span className="block text-gradient">Anything</span>
+                  <span className="block text-muted-foreground text-4xl md:text-5xl mt-2">Anywhere</span>
+                </h1>
+
+                <p className="text-xl text-muted-foreground mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                  Access thousands of apps, games, software, and media. 
+                  <span className="text-primary font-medium"> Free forever.</span>
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <Link to="/browse">
+                    <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-[var(--shadow-glow)] hover:shadow-[var(--neon-glow)] transition-all duration-500 text-lg h-14 px-8 rounded-full font-semibold group glow-button">
+                      <Download className="mr-2 h-5 w-5" />
+                      Explore Now
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                  <a href="#features">
+                    <Button size="lg" variant="outline" className="border-border bg-background/50 backdrop-blur-sm hover:bg-muted text-lg h-14 px-8 rounded-full font-semibold">
+                      Learn More
+                    </Button>
+                  </a>
+                </div>
+
+                {/* Stats */}
+                <div className="flex flex-wrap justify-center lg:justify-start gap-8 mt-12 pt-8 border-t border-border">
+                  {[
+                    { value: "10K+", label: "Downloads" },
+                    { value: "500+", label: "Files" },
+                    { value: "4.9", label: "Rating", icon: Star },
+                  ].map((stat, index) => (
+                    <div key={index} className="text-center">
+                      <div className="text-3xl font-bold text-foreground flex items-center gap-1 justify-center">
+                        {stat.value}
+                        {stat.icon && <stat.icon className="h-5 w-5 text-primary fill-primary" />}
+                      </div>
+                      <div className="text-sm text-muted-foreground">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right - Hero Visual */}
+              <div className="hidden lg:block relative">
+                <div className="relative">
+                  {/* Main card */}
+                  <div className="bg-card border border-border rounded-3xl p-8 shadow-[var(--shadow-card)] neon-border">
+                    <div className="grid grid-cols-2 gap-4">
+                      {[1, 2, 3, 4].map((i) => (
+                        <div
+                          key={i}
+                          className="aspect-square rounded-2xl bg-gradient-to-br from-muted to-secondary flex items-center justify-center animate-float"
+                          style={{ animationDelay: `${i * 0.5}s` }}
+                        >
+                          <Download className="h-8 w-8 text-primary/50" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Floating elements */}
+                  <div className="absolute -top-6 -right-6 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-[var(--shadow-glow)] animate-float font-semibold text-sm">
+                    ✨ 100% Free
+                  </div>
+                  <div className="absolute -bottom-4 -left-4 bg-card border border-border rounded-2xl px-4 py-2 shadow-lg animate-float font-medium text-sm" style={{ animationDelay: '-2s' }}>
+                    <span className="text-primary">⚡</span> Fast Downloads
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -102,42 +135,46 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
+      <section id="features" className="py-24 relative">
+        <div className="absolute inset-0 bg-muted/30" />
+        <div className="container mx-auto px-4 relative">
           <div className="text-center mb-16">
-            <span className="text-primary font-semibold text-sm uppercase tracking-wider">Why Choose Us</span>
-            <h2 className="text-3xl md:text-5xl font-bold mt-3 mb-4">Why Choose Up4Down?</h2>
+            <span className="text-primary font-semibold text-sm uppercase tracking-widest">Features</span>
+            <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-5">Why Choose Us?</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              We provide a seamless experience for downloading all types of files
+              Experience the best download platform with lightning-fast speeds
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
               {
                 icon: Zap,
-                title: "Fast Downloads",
-                description: "Get your files quickly with optimized download links and lightning-fast servers",
+                title: "Lightning Fast",
+                description: "Optimized servers deliver your files at maximum speed with zero throttling",
+                color: "from-yellow-500/20 to-orange-500/10",
               },
               {
                 icon: Shield,
-                title: "Safe & Secure",
-                description: "All files are checked and verified for your safety with advanced security scans",
+                title: "100% Secure",
+                description: "Every file is scanned and verified for your complete safety and peace of mind",
+                color: "from-green-500/20 to-emerald-500/10",
               },
               {
                 icon: Download,
-                title: "Huge Library",
-                description: "Access thousands of apps, games, software, and more in our extensive collection",
+                title: "Massive Library",
+                description: "Access our ever-growing collection of apps, games, software, and more",
+                color: "from-blue-500/20 to-cyan-500/10",
               },
             ].map((feature, index) => (
               <div
                 key={index}
-                className="text-center p-8 rounded-2xl bg-card border border-border/50 hover:border-primary/30 hover:shadow-[var(--shadow-card-hover)] transition-all duration-300 group"
+                className="group p-8 rounded-3xl bg-card border border-border hover:border-primary/30 transition-all duration-500 hover:shadow-[var(--shadow-card-hover)] hover:-translate-y-1"
               >
-                <div className="h-16 w-16 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <feature.icon className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             ))}
@@ -149,19 +186,27 @@ const Index = () => {
       {categories.length > 0 && (
         <section className="py-24">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <span className="text-primary font-semibold text-sm uppercase tracking-wider">Categories</span>
-              <h2 className="text-3xl md:text-5xl font-bold mt-3 mb-4">Browse by Category</h2>
-              <p className="text-muted-foreground text-lg">
-                Find exactly what you're looking for
-              </p>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div>
+                <span className="text-primary font-semibold text-sm uppercase tracking-widest">Categories</span>
+                <h2 className="text-4xl md:text-5xl font-bold mt-4">Browse by Category</h2>
+              </div>
+              <Link to="/browse">
+                <Button variant="ghost" className="text-primary hover:text-primary/80 group">
+                  View All
+                  <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {categories.map((category) => (
                 <Link key={category.id} to={`/browse?category=${category.slug}`}>
-                  <div className="p-6 rounded-2xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-[var(--shadow-card-hover)] transition-all duration-300 text-center group cursor-pointer">
-                    <h3 className="font-semibold group-hover:text-primary transition-colors">
+                  <div className="group p-6 rounded-2xl border border-border bg-card hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 text-center cursor-pointer">
+                    <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/10 transition-colors">
+                      <Folder className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                    <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">
                       {category.name}
                     </h3>
                   </div>
@@ -172,37 +217,33 @@ const Index = () => {
         </section>
       )}
 
-      {/* Featured Downloads Section */}
+      {/* Featured Downloads */}
       {featuredItems.length > 0 && (
         <section className="py-24 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <span className="text-primary font-semibold text-sm uppercase tracking-wider">Featured</span>
-              <h2 className="text-3xl md:text-5xl font-bold mt-3 mb-4">Featured Downloads</h2>
-              <p className="text-muted-foreground text-lg">
-                Hand-picked items selected by our team
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-              {featuredItems.map((item) => (
-                <DownloadCard key={item.id} item={item} />
-              ))}
-            </div>
-
-            <div className="text-center mt-12">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+              <div>
+                <span className="text-primary font-semibold text-sm uppercase tracking-widest">Featured</span>
+                <h2 className="text-4xl md:text-5xl font-bold mt-4">Top Picks</h2>
+              </div>
               <Link to="/browse">
-                <Button size="lg" variant="outline" className="rounded-xl h-12 px-8 font-semibold group">
-                  View All Downloads
+                <Button variant="outline" className="rounded-full group">
+                  See All Downloads
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredItems.map((item) => (
+                <DownloadCard key={item.id} item={item} />
+              ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* All Downloads Section */}
+      {/* All Downloads */}
       <section className="py-24">
         <div className="container mx-auto px-4">
           <RelatedItems currentItemId="" categoryIds={[]} />
@@ -210,14 +251,16 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 py-16 bg-card">
+      <footer className="border-t border-border py-12 bg-card">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+              <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center shadow-[var(--shadow-glow)]">
                 <Download className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="font-bold text-xl">Up4Down</span>
+              <span className="font-bold text-xl">
+                Up<span className="text-primary">4</span>Down
+              </span>
             </div>
             <p className="text-muted-foreground text-sm">
               © 2025 Up4Down. All rights reserved.

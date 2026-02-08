@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { DownloadCard } from "@/components/DownloadCard";
-import { Loader2 } from "lucide-react";
+import { Loader2, Search, PackageOpen } from "lucide-react";
 
 interface Category {
   id: string;
@@ -56,12 +56,10 @@ const Browse = () => {
     setLoading(true);
     
     if (selectedCategories.length > 0) {
-      // Get category IDs from slugs
       const selectedCats = categories.filter(c => selectedCategories.includes(c.slug));
       const categoryIds = selectedCats.map(c => c.id);
 
       if (categoryIds.length > 0) {
-        // Get items with any of these categories from junction table
         const { data: itemCategories } = await supabase
           .from("download_item_categories")
           .select("item_id")
@@ -79,7 +77,6 @@ const Browse = () => {
         }
       }
     } else {
-      // Get all items
       const { data } = await supabase
         .from("download_items")
         .select("*, download_item_categories(category_id)")
@@ -92,16 +89,30 @@ const Browse = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="container mx-auto px-4 py-12">
-        <div className="mb-10">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider">Explore</span>
-          <h1 className="text-4xl md:text-5xl font-bold mt-2 mb-3">Browse Downloads</h1>
-          <p className="text-muted-foreground text-lg">Explore our curated collection of files</p>
+      {/* Header */}
+      <div className="relative py-16 overflow-hidden">
+        <div className="absolute inset-0 bg-muted/50" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-50" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px]" />
+        
+        <div className="container mx-auto px-4 relative">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <Search className="h-6 w-6 text-primary" />
+            </div>
+            <span className="text-primary font-semibold text-sm uppercase tracking-widest">Explore</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Browse Downloads</h1>
+          <p className="text-muted-foreground text-lg max-w-xl">
+            Discover our curated collection of files, apps, and software
+          </p>
         </div>
-
+      </div>
+      
+      <main className="container mx-auto px-4 py-8">
         <CategoryFilter
           categories={categories}
           selectedCategories={selectedCategories}
@@ -109,26 +120,26 @@ const Browse = () => {
         />
 
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="relative">
-              <Loader2 className="h-10 w-10 animate-spin text-primary" />
-              <div className="absolute inset-0 h-10 w-10 rounded-full border-2 border-primary/20" />
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="relative mb-4">
+              <div className="h-16 w-16 rounded-full border-4 border-muted" />
+              <div className="absolute inset-0 h-16 w-16 rounded-full border-4 border-primary border-t-transparent animate-spin" />
             </div>
+            <p className="text-muted-foreground">Loading downloads...</p>
           </div>
-        ) : (
+        ) : items.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {items.map((item) => (
               <DownloadCard key={item.id} item={item} />
             ))}
-            {items.length === 0 && (
-              <div className="col-span-full text-center py-20">
-                <div className="h-20 w-20 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-4">
-                  <Loader2 className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <p className="text-muted-foreground text-lg font-medium">No items found</p>
-                <p className="text-sm text-muted-foreground/70 mt-1">Try adjusting your filters</p>
-              </div>
-            )}
+          </div>
+        ) : (
+          <div className="text-center py-24">
+            <div className="h-24 w-24 rounded-3xl bg-muted flex items-center justify-center mx-auto mb-6">
+              <PackageOpen className="h-12 w-12 text-muted-foreground/50" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">No items found</h3>
+            <p className="text-muted-foreground">Try adjusting your filters or check back later</p>
           </div>
         )}
       </main>
