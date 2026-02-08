@@ -20,12 +20,15 @@ interface DownloadCardProps {
 
 export const DownloadCard = ({ item }: DownloadCardProps) => {
   return (
-    <Link to={`/download/${item.id}`} className="group">
-      <Card className="overflow-hidden h-full relative bg-card border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-[var(--shadow-card-hover)]">
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+    <Link to={`/download/${item.id}`} className="group block">
+      <Card className="overflow-hidden h-full relative bg-card border-border hover:border-primary/50 transition-all duration-500 hover:shadow-[var(--shadow-card-hover)] hover:-translate-y-1">
+        {/* Neon glow effect on hover */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
+          <div className="absolute -inset-px rounded-lg bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 blur-sm transition-opacity" />
+        </div>
         
-        <div className="aspect-video bg-muted relative overflow-hidden">
+        <div className="aspect-[4/3] bg-muted relative overflow-hidden">
           {item.thumbnail_url ? (
             <img
               src={(() => {
@@ -37,25 +40,27 @@ export const DownloadCard = ({ item }: DownloadCardProps) => {
                 }
               })()}
               alt={item.title}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
-              <Download className="h-12 w-12 text-muted-foreground/50" />
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary to-muted">
+              <Download className="h-12 w-12 text-muted-foreground/30" />
             </div>
           )}
-          <Badge className="absolute top-3 right-3 bg-primary/90 text-primary-foreground backdrop-blur-sm border-0 font-medium">
-            {item.file_type.toUpperCase()}
+          
+          {/* File type badge */}
+          <Badge className="absolute top-3 left-3 bg-background/90 text-foreground backdrop-blur-md border-0 font-semibold uppercase text-xs tracking-wider">
+            {item.file_type}
           </Badge>
           
-          {/* Hover arrow indicator */}
-          <div className="absolute bottom-3 right-3 h-8 w-8 rounded-full bg-primary flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-            <ArrowUpRight className="h-4 w-4 text-primary-foreground" />
+          {/* Hover arrow */}
+          <div className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-primary flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-[var(--shadow-glow)]">
+            <ArrowUpRight className="h-5 w-5 text-primary-foreground" />
           </div>
         </div>
 
-        <div className="p-4 space-y-3 relative">
-          <h3 className="font-semibold line-clamp-1 group-hover:text-primary transition-colors duration-200">
+        <div className="p-5 space-y-3 relative">
+          <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors duration-300">
             {item.title}
           </h3>
 
@@ -65,15 +70,15 @@ export const DownloadCard = ({ item }: DownloadCardProps) => {
             </p>
           )}
 
-          <div className="flex items-center justify-between text-sm text-muted-foreground pt-2 border-t border-border/50">
+          <div className="flex items-center justify-between text-sm text-muted-foreground pt-3 border-t border-border">
             <span className="flex items-center gap-1.5">
               <Eye className="h-4 w-4" />
               {item.download_count.toLocaleString()}
             </span>
             <span className="flex items-center gap-1.5">
               <Star className="h-4 w-4 fill-primary text-primary" />
-              <span className="font-medium text-foreground">{item.average_rating.toFixed(1)}</span>
-              <span>({item.rating_count})</span>
+              <span className="font-semibold text-foreground">{item.average_rating.toFixed(1)}</span>
+              <span className="text-xs">({item.rating_count})</span>
             </span>
           </div>
         </div>

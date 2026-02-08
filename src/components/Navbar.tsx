@@ -1,49 +1,94 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Download, Sparkles } from "lucide-react";
+import { Download, Menu, X } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useState } from "react";
 
 export const Navbar = () => {
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   return (
-    <nav className="border-b border-border/50 bg-card/80 backdrop-blur-xl sticky top-0 z-50">
+    <nav className="glass sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between gap-4 h-16">
-          <Link to="/" className="flex items-center gap-2.5 font-bold text-xl group">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center group-hover:shadow-[var(--shadow-glow)] transition-shadow duration-300">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3 font-bold text-xl group">
+            <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center shadow-[var(--shadow-glow)] group-hover:animate-pulse-glow transition-all duration-300">
               <Download className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="hidden sm:inline bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-              Up4Down
+            <span className="hidden sm:inline font-bold tracking-tight">
+              Up<span className="text-primary">4</span>Down
             </span>
           </Link>
 
-          <div className="flex-1 max-w-md">
+          {/* Search - Desktop */}
+          <div className="hidden md:flex flex-1 max-w-lg">
             <SearchBar />
           </div>
 
-          <div className="flex items-center gap-1 sm:gap-2">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-2">
             <Link to="/">
               <Button 
-                variant={location.pathname === "/" ? "secondary" : "ghost"} 
+                variant={location.pathname === "/" ? "default" : "ghost"} 
                 size="sm"
-                className="font-medium"
+                className={`font-medium rounded-full px-5 ${location.pathname === "/" ? "shadow-[var(--shadow-glow)]" : ""}`}
               >
                 Home
               </Button>
             </Link>
             <Link to="/browse">
               <Button 
-                variant={location.pathname === "/browse" ? "secondary" : "ghost"} 
+                variant={location.pathname === "/browse" ? "default" : "ghost"} 
                 size="sm"
-                className="font-medium"
+                className={`font-medium rounded-full px-5 ${location.pathname === "/browse" ? "shadow-[var(--shadow-glow)]" : ""}`}
               >
                 Browse
               </Button>
             </Link>
+            <ThemeToggle />
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="flex md:hidden items-center gap-2">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="h-9 w-9"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 border-t border-border/50 space-y-4">
+            <SearchBar />
+            <div className="flex gap-2">
+              <Link to="/" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                <Button 
+                  variant={location.pathname === "/" ? "default" : "outline"} 
+                  className="w-full rounded-xl"
+                >
+                  Home
+                </Button>
+              </Link>
+              <Link to="/browse" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                <Button 
+                  variant={location.pathname === "/browse" ? "default" : "outline"} 
+                  className="w-full rounded-xl"
+                >
+                  Browse
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
