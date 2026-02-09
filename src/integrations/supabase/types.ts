@@ -193,6 +193,53 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_connected_chats: {
+        Row: {
+          bot_id: string
+          chat_id: number
+          chat_title: string | null
+          chat_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          last_message_at: string | null
+          messages_processed: number
+          updated_at: string
+        }
+        Insert: {
+          bot_id: string
+          chat_id: number
+          chat_title?: string | null
+          chat_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_message_at?: string | null
+          messages_processed?: number
+          updated_at?: string
+        }
+        Update: {
+          bot_id?: string
+          chat_id?: number
+          chat_title?: string | null
+          chat_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_message_at?: string | null
+          messages_processed?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "telegram_connected_chats_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "telegram_bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -225,6 +272,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_chat_messages: {
+        Args: { _bot_id: string; _chat_id: number }
+        Returns: undefined
       }
       increment_download_count: {
         Args: { item_id: string }

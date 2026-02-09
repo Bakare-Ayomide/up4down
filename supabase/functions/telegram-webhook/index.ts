@@ -95,6 +95,29 @@ serve(async (req) => {
       });
     }
 
+    // Track connected chat (channel, group, supergroup)
+    if (botId && message.chat) {
+      try {
+        await supabase
+          .from("telegram_connected_chats")
+          .upsert({
+            bot_id: botId,
+            chat_id: message.chat.id,
+            chat_title: message.chat.title || `Private ${message.chat.id}`,
+            chat_type: message.chat.type,
+            last_message_at: new Date().toISOString(),
+          }, { onConflict: "bot_id,chat_id" });
+
+        // Increment messages_processed
+        await supabase.rpc("increment_chat_messages", {
+          _bot_id: botId,
+          _chat_id: message.chat.id,
+        });
+      } catch (e) {
+        console.error("Failed to track chat:", e);
+      }
+    }
+
     // Check if there's a document (file) in the message
     if (message.document) {
       const doc = message.document;
