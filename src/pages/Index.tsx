@@ -65,8 +65,8 @@ const Index = () => {
                 </h1>
 
                 <p className="text-xl text-muted-foreground mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-                  Access thousands of apps, games, software, and media. 
-                  <span className="text-primary font-medium"> Free forever.</span>
+                  Access thousands of apps, games, software, and media.
+                  <span className="text-primary font-medium"> Starting at just $0.99/month.</span>
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -122,7 +122,7 @@ const Index = () => {
                   
                   {/* Floating elements */}
                   <div className="absolute -top-6 -right-6 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-[var(--shadow-glow)] animate-float font-semibold text-sm">
-                    ✨ 100% Free
+                    ✨ Premium Access
                   </div>
                   <div className="absolute -bottom-4 -left-4 bg-card border border-border rounded-2xl px-4 py-2 shadow-lg animate-float font-medium text-sm" style={{ animationDelay: '-2s' }}>
                     <span className="text-primary">⚡</span> Fast Downloads

@@ -160,6 +160,69 @@ export type Database = {
           },
         ]
       }
+      site_settings: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          currency: string
+          expires_at: string | null
+          id: string
+          payment_reference: string | null
+          started_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number
+          created_at?: string
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          payment_reference?: string | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          payment_reference?: string | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       telegram_bots: {
         Row: {
           bot_token: string

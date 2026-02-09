@@ -8,9 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { RatingDisplay } from "@/components/RatingDisplay";
 import { RatingInput } from "@/components/RatingInput";
 import { RelatedItems } from "@/components/RelatedItems";
+import { DownloadModal } from "@/components/DownloadModal";
 import { Download as DownloadIcon, Eye, Star, Clock, ArrowLeft, FileType, HardDrive, Tag, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { ImageCarousel } from "@/components/ImageCarousel";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useFreeDownloads } from "@/hooks/useFreeDownloads";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface DownloadItem {
   id: string;
@@ -38,6 +42,10 @@ const Download = () => {
   const [item, setItem] = useState<DownloadItem | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const { isSubscribed } = useSubscription();
+  const { recordDownload } = useFreeDownloads();
+  const { settings } = useSiteSettings();
 
   useEffect(() => {
     fetchItem();
@@ -68,26 +76,44 @@ const Download = () => {
     setLoading(false);
   };
 
-  const handleDownload = async () => {
-    if (!item) return;
+  const handleDownloadClick = () => {
+    if (isSubscribed) {
+      executeDownload();
+    } else {
+      setShowModal(true);
+    }
+  };
 
+  const handleFreeDownload = async () => {
+    // Run ad flow first
+    if (settings.ad_settings.custom_js_enabled && item?.custom_js) {
+      try {
+        const customFunction = new Function('item', 'window', 'document', item.custom_js);
+        const result = customFunction(item, window, document);
+        if (result === false) return; // Ad flow not complete
+      } catch (jsError) {
+        console.error("Custom JS execution error:", jsError);
+      }
+    }
+
+    // Open ad URLs if configured
+    if (settings.ad_settings.ad_urls.length > 0) {
+      const randomAd = settings.ad_settings.ad_urls[Math.floor(Math.random() * settings.ad_settings.ad_urls.length)];
+      window.open(randomAd, "_blank");
+    }
+
+    recordDownload();
+    executeDownload();
+  };
+
+  const executeDownload = async () => {
+    if (!item) return;
     try {
       await supabase.rpc("increment_download_count", { item_id: item.id });
-      
-      if (item.custom_js) {
-        try {
-          const customFunction = new Function('item', 'window', 'document', item.custom_js);
-          customFunction(item, window, document);
-        } catch (jsError) {
-          console.error("Custom JS execution error:", jsError);
-        }
-      }
-      
       window.open(item.download_url, "_blank");
       toast.success("Download started!");
-      
       fetchItem();
-    } catch (error) {
+    } catch {
       toast.error("Failed to start download");
     }
   };
@@ -227,7 +253,7 @@ const Download = () => {
             <Card className="p-6 sticky top-24 border-border bg-card neon-border">
               {/* Download button */}
               <Button
-                onClick={handleDownload}
+                onClick={handleDownloadClick}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[var(--shadow-glow)] hover:shadow-[var(--neon-glow)] transition-all duration-500 rounded-xl h-14 text-lg font-semibold glow-button"
                 size="lg"
               >
@@ -279,6 +305,13 @@ const Download = () => {
             categoryIds={item.categories?.map(ic => ic.category_id) || []} 
           />
         </div>
+        {/* Download Modal */}
+        <DownloadModal
+          open={showModal}
+          onOpenChange={setShowModal}
+          onFreeDownload={handleFreeDownload}
+          itemTitle={item?.title || ""}
+        />
       </main>
     </div>
   );
