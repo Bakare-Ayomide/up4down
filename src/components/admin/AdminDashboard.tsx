@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LogOut, Plus, LayoutGrid, Bot, Settings, Crown, Sliders } from "lucide-react";
+import { LogOut, Plus, LayoutGrid, Bot, Settings, Crown, Sliders, FileText } from "lucide-react";
 import { AdminItemForm } from "./AdminItemForm";
 import { AdminItemList } from "./AdminItemList";
 import { TelegramBotManager } from "./TelegramBotManager";
 import { SubscriptionManager } from "./SubscriptionManager";
 import { SiteSettingsManager } from "./SiteSettingsManager";
+import { PageBuilder } from "./PageBuilder";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AdminDashboardProps {
@@ -56,7 +57,7 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
 
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <Tabs defaultValue="items" className="space-y-6">
-          <TabsList className="grid w-full max-w-2xl grid-cols-4 h-12">
+          <TabsList className="grid w-full max-w-3xl grid-cols-5 h-12">
             <TabsTrigger value="items" className="gap-1 text-xs sm:text-sm">
               <LayoutGrid className="h-4 w-4" />
               Downloads
@@ -64,6 +65,10 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
             <TabsTrigger value="subscriptions" className="gap-1 text-xs sm:text-sm">
               <Crown className="h-4 w-4" />
               Subs
+            </TabsTrigger>
+            <TabsTrigger value="pages" className="gap-1 text-xs sm:text-sm">
+              <FileText className="h-4 w-4" />
+              Pages
             </TabsTrigger>
             <TabsTrigger value="settings" className="gap-1 text-xs sm:text-sm">
               <Sliders className="h-4 w-4" />
@@ -104,6 +109,10 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
 
           <TabsContent value="subscriptions">
             <SubscriptionManager />
+          </TabsContent>
+
+          <TabsContent value="pages">
+            <PageBuilder />
           </TabsContent>
 
           <TabsContent value="settings">

@@ -50,7 +50,7 @@ export const convertCurrency = async (
   if (from === to) return amount;
 
   try {
-    // Check cache
+    // Check cache - cache rates by base currency, not amount
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
       const entry: CacheEntry = JSON.parse(cached);
@@ -59,18 +59,36 @@ export const convertCurrency = async (
       }
     }
 
-    const res = await fetch(`https://api.frankfurter.app/latest?from=${from}&amount=${amount}`);
+    // Fetch rate for 1 unit of base currency so we can cache and reuse
+    const res = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
+    if (!res.ok) throw new Error("Currency API error");
     const data = await res.json();
 
-    // Cache rates
+    if (!data.rates || !data.rates[to]) {
+      throw new Error("No rate returned");
+    }
+
+    // Cache all rates from this response
+    const cacheKey = CACHE_KEY + "_" + from;
+    const existingCache = localStorage.getItem(CACHE_KEY);
+    let allRates: Record<string, number> = {};
+    if (existingCache) {
+      try {
+        const existing: CacheEntry = JSON.parse(existingCache);
+        if (existing.base === from) allRates = existing.rates;
+      } catch {}
+    }
+    allRates[to] = data.rates[to];
+
     localStorage.setItem(CACHE_KEY, JSON.stringify({
-      rates: data.rates,
+      rates: allRates,
       timestamp: Date.now(),
       base: from,
     }));
 
-    return Math.round((data.rates[to] || amount) * 100) / 100;
-  } catch {
+    return Math.round(amount * data.rates[to] * 100) / 100;
+  } catch (err) {
+    console.error("Currency conversion failed:", err);
     return amount; // fallback
   }
 };

@@ -9,6 +9,8 @@ import Browse from "./pages/Browse";
 import Download from "./pages/Download";
 import Payment from "./pages/Payment";
 import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
+import CustomPage from "./pages/CustomPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/download/:id" element={<Download />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/page/:slug" element={<CustomPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

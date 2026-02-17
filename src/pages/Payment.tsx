@@ -50,21 +50,27 @@ const Payment = () => {
 
     setSubmitting(true);
     try {
-      // Sign up or sign in user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password: crypto.randomUUID(), // temp password, admin activates manually
-      });
+      // Check if user is logged in
+      const { data: { session } } = await supabase.auth.getSession();
+      let userId = session?.user?.id;
 
-      let userId = authData?.user?.id;
+      if (!userId) {
+        // Not logged in - try to sign up with email + a temp password
+        const tempPassword = crypto.randomUUID().slice(0, 16) + "Aa1!";
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email,
+          password: tempPassword,
+        });
 
-      if (authError && authError.message.includes("already registered")) {
-        // User exists, try to get their ID via a pending subscription
-        const { error: signInError } = await supabase.auth.signInWithOtp({ email });
-        if (signInError) {
-          // Just create a pending subscription without auth
-          toast.info("We'll process your subscription after payment verification.");
+        if (authError) {
+          if (authError.message.includes("already registered")) {
+            toast.error("This email is already registered. Please log in first at /auth");
+            setSubmitting(false);
+            return;
+          }
+          throw authError;
         }
+        userId = authData?.user?.id;
       }
 
       if (userId) {
