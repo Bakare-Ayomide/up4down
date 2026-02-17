@@ -1,13 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Download, Menu, X } from "lucide-react";
+import { Download, Menu, X, User, LogIn } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navbar = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => setSession(session));
+    return () => subscription.unsubscribe();
+  }, []);
   
   return (
     <nav className="glass sticky top-0 z-50">
@@ -48,6 +56,16 @@ export const Navbar = () => {
                 Browse
               </Button>
             </Link>
+            <Link to="/auth">
+              <Button 
+                variant={location.pathname === "/auth" ? "default" : "ghost"} 
+                size="sm"
+                className={`font-medium rounded-full px-5 ${location.pathname === "/auth" ? "shadow-[var(--shadow-glow)]" : ""}`}
+              >
+                {session ? <User className="h-4 w-4 mr-1" /> : <LogIn className="h-4 w-4 mr-1" />}
+                {session ? "Account" : "Login"}
+              </Button>
+            </Link>
             <ThemeToggle />
           </div>
 
@@ -84,6 +102,14 @@ export const Navbar = () => {
                   className="w-full rounded-xl"
                 >
                   Browse
+                </Button>
+              </Link>
+              <Link to="/auth" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                <Button 
+                  variant={location.pathname === "/auth" ? "default" : "outline"} 
+                  className="w-full rounded-xl"
+                >
+                  {session ? "Account" : "Login"}
                 </Button>
               </Link>
             </div>
