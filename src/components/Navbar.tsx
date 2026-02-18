@@ -56,11 +56,11 @@ export const Navbar = () => {
                 Browse
               </Button>
             </Link>
-            <Link to="/auth">
+            <Link to={session ? "/account" : "/auth"}>
               <Button 
-                variant={location.pathname === "/auth" ? "default" : "ghost"} 
+                variant={(location.pathname === "/auth" || location.pathname === "/account") ? "default" : "ghost"} 
                 size="sm"
-                className={`font-medium rounded-full px-5 ${location.pathname === "/auth" ? "shadow-[var(--shadow-glow)]" : ""}`}
+                className={`font-medium rounded-full px-5 ${(location.pathname === "/auth" || location.pathname === "/account") ? "shadow-[var(--shadow-glow)]" : ""}`}
               >
                 {session ? <User className="h-4 w-4 mr-1" /> : <LogIn className="h-4 w-4 mr-1" />}
                 {session ? "Account" : "Login"}
@@ -104,9 +104,9 @@ export const Navbar = () => {
                   Browse
                 </Button>
               </Link>
-              <Link to="/auth" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+              <Link to={session ? "/account" : "/auth"} className="flex-1" onClick={() => setMobileMenuOpen(false)}>
                 <Button 
-                  variant={location.pathname === "/auth" ? "default" : "outline"} 
+                  variant={(location.pathname === "/auth" || location.pathname === "/account") ? "default" : "outline"} 
                   className="w-full rounded-xl"
                 >
                   {session ? "Account" : "Login"}
