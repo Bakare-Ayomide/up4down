@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { LogIn, UserPlus, Loader2, Crown } from "lucide-react";
-import { useSubscription } from "@/hooks/useSubscription";
+import { LogIn, UserPlus, Loader2 } from "lucide-react";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [checkingSession, setCheckingSession] = useState(true);
-  const { isSubscribed, loading: subLoading } = useSubscription();
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -68,40 +67,15 @@ const Auth = () => {
     );
   }
 
-  // Logged in - show account dashboard
+  // Logged in - redirect to account page
   if (session) {
+    navigate("/account");
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <main className="container mx-auto px-4 py-12 max-w-lg">
-          <Card className="p-8 border-border bg-card text-center">
-            <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-              <Crown className="h-8 w-8 text-primary" />
-            </div>
-            <h1 className="text-2xl font-bold mb-2">My Account</h1>
-            <p className="text-muted-foreground mb-6">{session.user.email}</p>
-
-            <div className="p-4 rounded-xl bg-muted/50 mb-6">
-              <p className="text-sm text-muted-foreground mb-1">Subscription Status</p>
-              {subLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin mx-auto" />
-              ) : isSubscribed ? (
-                <span className="text-lg font-bold text-green-500">✅ Premium Active</span>
-              ) : (
-                <div>
-                  <span className="text-lg font-bold text-muted-foreground">Free Tier</span>
-                  <Button onClick={() => navigate("/payment")} className="w-full mt-3 rounded-xl" size="sm">
-                    <Crown className="mr-2 h-4 w-4" /> Upgrade to Premium
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            <Button variant="outline" onClick={handleLogout} className="w-full rounded-xl">
-              Log Out
-            </Button>
-          </Card>
-        </main>
+        <div className="flex items-center justify-center py-24">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
       </div>
     );
   }
