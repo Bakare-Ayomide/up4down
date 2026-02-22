@@ -21,8 +21,8 @@ const menuItems = [
 
 export const AdminSidebar = ({ activeTab, onTabChange, onLogout }: AdminSidebarProps) => {
   return (
-    <aside className="w-64 border-r border-border bg-card/50 min-h-screen flex flex-col">
-      <div className="p-4 border-b border-border">
+    <aside className="lg:w-64 lg:border-r border-border lg:bg-card/50 lg:min-h-[calc(100vh-4rem)] flex flex-col">
+      <div className="p-4 border-b border-border hidden lg:block">
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
             <Settings className="h-5 w-5 text-primary-foreground" />
@@ -49,7 +49,7 @@ export const AdminSidebar = ({ activeTab, onTabChange, onLogout }: AdminSidebarP
         ))}
       </nav>
 
-      <div className="p-3 border-t border-border">
+      <div className="p-3 border-t border-border hidden lg:block">
         <Button variant="ghost" onClick={onLogout} className="w-full justify-start gap-3 text-muted-foreground">
           <LogOut className="h-4 w-4" />
           Logout

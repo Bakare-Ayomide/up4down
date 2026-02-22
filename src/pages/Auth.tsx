@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Navbar } from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<any>(null);
   const [checkingSession, setCheckingSession] = useState(true);
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -49,74 +51,89 @@ const Auth = () => {
     setLoading(false);
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Logged out");
+  };
+
   if (checkingSession) {
     return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center py-24">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
       </div>
     );
   }
 
+  // Logged in - redirect to account page
   if (session) {
     navigate("/account");
     return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center py-24">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
       </div>
     );
   }
 
   return (
-    <main className="container mx-auto px-4 py-12 max-w-md">
-      <Tabs defaultValue="login" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 h-12">
-          <TabsTrigger value="login" className="gap-2">
-            <LogIn className="h-4 w-4" /> Login
-          </TabsTrigger>
-          <TabsTrigger value="signup" className="gap-2">
-            <UserPlus className="h-4 w-4" /> Sign Up
-          </TabsTrigger>
-        </TabsList>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main className="container mx-auto px-4 py-12 max-w-md">
+        <Tabs defaultValue="login" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2 h-12">
+            <TabsTrigger value="login" className="gap-2">
+              <LogIn className="h-4 w-4" /> Login
+            </TabsTrigger>
+            <TabsTrigger value="signup" className="gap-2">
+              <UserPlus className="h-4 w-4" /> Sign Up
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="login">
-          <Card className="p-6 border-border bg-card">
-            <h2 className="text-xl font-bold mb-4 text-center">Welcome Back</h2>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <Label htmlFor="login-email">Email</Label>
-                <Input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-1" />
-              </div>
-              <div>
-                <Label htmlFor="login-pass">Password</Label>
-                <Input id="login-pass" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••" required className="mt-1" />
-              </div>
-              <Button type="submit" disabled={loading} className="w-full rounded-xl h-11">
-                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Log In"}
-              </Button>
-            </form>
-          </Card>
-        </TabsContent>
+          <TabsContent value="login">
+            <Card className="p-6 border-border bg-card">
+              <h2 className="text-xl font-bold mb-4 text-center">Welcome Back</h2>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <Label htmlFor="login-email">Email</Label>
+                  <Input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-1" />
+                </div>
+                <div>
+                  <Label htmlFor="login-pass">Password</Label>
+                  <Input id="login-pass" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••" required className="mt-1" />
+                </div>
+                <Button type="submit" disabled={loading} className="w-full rounded-xl h-11">
+                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Log In"}
+                </Button>
+              </form>
+            </Card>
+          </TabsContent>
 
-        <TabsContent value="signup">
-          <Card className="p-6 border-border bg-card">
-            <h2 className="text-xl font-bold mb-4 text-center">Create Account</h2>
-            <form onSubmit={handleSignUp} className="space-y-4">
-              <div>
-                <Label htmlFor="signup-email">Email</Label>
-                <Input id="signup-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-1" />
-              </div>
-              <div>
-                <Label htmlFor="signup-pass">Password</Label>
-                <Input id="signup-pass" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min 6 characters" required className="mt-1" />
-              </div>
-              <Button type="submit" disabled={loading} className="w-full rounded-xl h-11">
-                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Create Account"}
-              </Button>
-            </form>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </main>
+          <TabsContent value="signup">
+            <Card className="p-6 border-border bg-card">
+              <h2 className="text-xl font-bold mb-4 text-center">Create Account</h2>
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div>
+                  <Label htmlFor="signup-email">Email</Label>
+                  <Input id="signup-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-1" />
+                </div>
+                <div>
+                  <Label htmlFor="signup-pass">Password</Label>
+                  <Input id="signup-pass" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min 6 characters" required className="mt-1" />
+                </div>
+                <Button type="submit" disabled={loading} className="w-full rounded-xl h-11">
+                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Create Account"}
+                </Button>
+              </form>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
   );
 };
 
