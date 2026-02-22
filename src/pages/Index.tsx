@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { DownloadCard } from "@/components/DownloadCard";
 import { RelatedItems } from "@/components/RelatedItems";
@@ -33,8 +32,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-
       {/* Hero Section - Cyberpunk Style */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center">
         {/* Background layers */}
@@ -105,7 +102,6 @@ const Index = () => {
               {/* Right - Hero Visual */}
               <div className="hidden lg:block relative">
                 <div className="relative">
-                  {/* Main card */}
                   <div className="bg-card border border-border rounded-3xl p-8 shadow-[var(--shadow-card)] neon-border">
                     <div className="grid grid-cols-2 gap-4">
                       {[1, 2, 3, 4].map((i) => (
@@ -120,7 +116,6 @@ const Index = () => {
                     </div>
                   </div>
                   
-                  {/* Floating elements */}
                   <div className="absolute -top-6 -right-6 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-[var(--shadow-glow)] animate-float font-semibold text-sm">
                     ✨ Premium Access
                   </div>
