@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Navbar } from "@/components/Navbar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { DownloadCard } from "@/components/DownloadCard";
 import { Loader2, Search, PackageOpen } from "lucide-react";
@@ -90,8 +89,6 @@ const Browse = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      
       {/* Header */}
       <div className="relative py-16 overflow-hidden">
         <div className="absolute inset-0 bg-muted/50" />
