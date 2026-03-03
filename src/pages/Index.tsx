@@ -35,13 +35,11 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* Hero Section - Cyberpunk Style */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center">
-        {/* Background layers */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/30" />
         <div className="absolute inset-0 bg-grid-pattern" />
         
-        {/* Animated orbs */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-[100px] animate-float" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/15 rounded-full blur-[120px] animate-float" style={{ animationDelay: '-3s' }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px]" />
@@ -49,7 +47,6 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Left content */}
               <div className="text-center lg:text-left">
                 <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-primary/20">
                   <Sparkles className="h-4 w-4 text-primary" />
@@ -84,7 +81,6 @@ const Index = () => {
                   </a>
                 </div>
 
-                {/* Stats */}
                 <div className="flex flex-wrap justify-center lg:justify-start gap-8 mt-12 pt-8 border-t border-border">
                   {[
                     { value: "10K+", label: "Downloads" },
@@ -102,10 +98,8 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Right - Hero Visual */}
               <div className="hidden lg:block relative">
                 <div className="relative">
-                  {/* Main card */}
                   <div className="bg-card border border-border rounded-3xl p-8 shadow-[var(--shadow-card)] neon-border">
                     <div className="grid grid-cols-2 gap-4">
                       {[1, 2, 3, 4].map((i) => (
@@ -120,7 +114,6 @@ const Index = () => {
                     </div>
                   </div>
                   
-                  {/* Floating elements */}
                   <div className="absolute -top-6 -right-6 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-[var(--shadow-glow)] animate-float font-semibold text-sm">
                     ✨ Premium Access
                   </div>
@@ -152,19 +145,19 @@ const Index = () => {
                 icon: Zap,
                 title: "Lightning Fast",
                 description: "Optimized servers deliver your files at maximum speed with zero throttling",
-                color: "from-yellow-500/20 to-orange-500/10",
+                color: "from-primary/20 to-destructive/10",
               },
               {
                 icon: Shield,
                 title: "100% Secure",
                 description: "Every file is scanned and verified for your complete safety and peace of mind",
-                color: "from-green-500/20 to-emerald-500/10",
+                color: "from-primary/15 to-primary/5",
               },
               {
                 icon: Download,
                 title: "Massive Library",
                 description: "Access our ever-growing collection of apps, games, software, and more",
-                color: "from-blue-500/20 to-cyan-500/10",
+                color: "from-destructive/20 to-primary/10",
               },
             ].map((feature, index) => (
               <div
@@ -255,15 +248,15 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center shadow-[var(--shadow-glow)]">
+              <div className="h-10 w-10 rounded-xl bg-destructive flex items-center justify-center shadow-[var(--shadow-glow)]">
                 <Download className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="font-bold text-xl">
-                Up<span className="text-primary">4</span>Down
+                ZEROLORD<span className="text-primary">4</span>Down
               </span>
             </div>
             <p className="text-muted-foreground text-sm">
-              © 2025 Up4Down. All rights reserved.
+              © 2025 Zerolord. All rights reserved.
             </p>
           </div>
         </div>

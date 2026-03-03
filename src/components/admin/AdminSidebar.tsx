@@ -1,4 +1,4 @@
-import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck } from "lucide-react";
+import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ const menuItems = [
   { id: "users", label: "Users", icon: Users },
   { id: "subscriptions", label: "Subscriptions", icon: Crown },
   { id: "calendar", label: "Calendar", icon: CalendarDays },
+  { id: "news", label: "News", icon: Newspaper },
   { id: "pages", label: "Pages", icon: FileText },
   { id: "roles", label: "Roles", icon: ShieldCheck },
   { id: "settings", label: "Settings", icon: Sliders },
@@ -27,7 +28,7 @@ export const AdminSidebar = ({ activeTab, onTabChange, onLogout }: AdminSidebarP
           <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
             <Settings className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-lg">Admin</span>
+          <span className="font-bold text-lg">Zerolord Admin</span>
         </div>
       </div>
 
