@@ -9,6 +9,7 @@ import { PageBuilder } from "./PageBuilder";
 import { UserManager } from "./UserManager";
 import { RoleManager } from "./RoleManager";
 import { SubscriptionCalendar } from "./SubscriptionCalendar";
+import { NewsManager } from "./NewsManager";
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
 
@@ -71,6 +72,8 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
         return <SubscriptionManager />;
       case "calendar":
         return <SubscriptionCalendar />;
+      case "news":
+        return <NewsManager />;
       case "pages":
         return <PageBuilder />;
       case "roles":

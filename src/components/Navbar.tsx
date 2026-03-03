@@ -52,8 +52,15 @@ export const Navbar = () => {
                 variant={location.pathname === "/browse" ? "default" : "ghost"}
                 size="sm"
                 className={`font-medium rounded-full px-5 ${location.pathname === "/browse" ? "shadow-[var(--shadow-glow)]" : ""}`}>
-                
                 Browse
+              </Button>
+            </Link>
+            <Link to="/news">
+              <Button
+                variant={location.pathname === "/news" ? "default" : "ghost"}
+                size="sm"
+                className={`font-medium rounded-full px-5 ${location.pathname === "/news" ? "shadow-[var(--shadow-glow)]" : ""}`}>
+                News
               </Button>
             </Link>
             <Link to={session ? "/account" : "/auth"}>
@@ -100,8 +107,14 @@ export const Navbar = () => {
                 <Button
                 variant={location.pathname === "/browse" ? "default" : "outline"}
                 className="w-full rounded-xl">
-                
                   Browse
+                </Button>
+              </Link>
+              <Link to="/news" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                variant={location.pathname === "/news" ? "default" : "outline"}
+                className="w-full rounded-xl">
+                  News
                 </Button>
               </Link>
               <Link to={session ? "/account" : "/auth"} className="flex-1" onClick={() => setMobileMenuOpen(false)}>
