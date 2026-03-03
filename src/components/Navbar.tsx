@@ -26,7 +26,7 @@ export const Navbar = () => {
             <div className="h-10 w-10 rounded-xl flex items-center justify-center shadow-[var(--shadow-glow)] group-hover:animate-pulse-glow transition-all duration-300 bg-destructive">
               <Download className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="hidden sm:inline font-bold tracking-tight">ZEROLORD
+            <span className="hidden sm:inline font-bold tracking-tight">ZEROLORD4
               <span className="text-primary">4</span>Down
             </span>
           </Link>
