@@ -1,4 +1,4 @@
-import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper } from "lucide-react";
+import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ const menuItems = [
   { id: "users", label: "Users", icon: Users },
   { id: "subscriptions", label: "Subscriptions", icon: Crown },
   { id: "calendar", label: "Calendar", icon: CalendarDays },
+  { id: "categories", label: "Categories", icon: FolderOpen },
   { id: "news", label: "News", icon: Newspaper },
   { id: "pages", label: "Pages", icon: FileText },
   { id: "roles", label: "Roles", icon: ShieldCheck },

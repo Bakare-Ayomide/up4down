@@ -163,8 +163,10 @@ export type Database = {
           content: string
           created_at: string
           excerpt: string | null
+          file_urls: Json | null
           id: string
           published: boolean
+          thumbnail_url: string | null
           title: string
           updated_at: string
         }
@@ -172,8 +174,10 @@ export type Database = {
           content?: string
           created_at?: string
           excerpt?: string | null
+          file_urls?: Json | null
           id?: string
           published?: boolean
+          thumbnail_url?: string | null
           title: string
           updated_at?: string
         }
@@ -181,8 +185,10 @@ export type Database = {
           content?: string
           created_at?: string
           excerpt?: string | null
+          file_urls?: Json | null
           id?: string
           published?: boolean
+          thumbnail_url?: string | null
           title?: string
           updated_at?: string
         }
