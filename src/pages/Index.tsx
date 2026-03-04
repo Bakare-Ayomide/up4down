@@ -7,6 +7,7 @@ import { DownloadCard } from "@/components/DownloadCard";
 import { RelatedItems } from "@/components/RelatedItems";
 import { Download, Sparkles, Shield, Zap, ArrowRight, Star, Folder, ChevronRight } from "lucide-react";
 import { HeroImages } from "@/components/HeroImages";
+import { AdBanner } from "@/components/AdBanner";
 
 const Index = () => {
   const [featuredItems, setFeaturedItems] = useState<any[]>([]);
@@ -118,6 +119,11 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Top Ad */}
+      <div className="container mx-auto px-4">
+        <AdBanner page="home" position="top" />
+      </div>
+
       {/* Features Section */}
       <section id="features" className="py-24 relative">
         <div className="absolute inset-0 bg-muted/30" />
@@ -227,12 +233,22 @@ const Index = () => {
         </section>
       )}
 
+      {/* Inline Ad */}
+      <div className="container mx-auto px-4">
+        <AdBanner page="home" position="inline" />
+      </div>
+
       {/* All Downloads */}
       <section className="py-24">
         <div className="container mx-auto px-4">
           <RelatedItems currentItemId="" categoryIds={[]} />
         </div>
       </section>
+
+      {/* Bottom Ad */}
+      <div className="container mx-auto px-4">
+        <AdBanner page="home" position="bottom" />
+      </div>
 
       {/* Footer */}
       <footer className="border-t border-border py-12 bg-card">

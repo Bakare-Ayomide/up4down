@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_events: {
+        Row: {
+          ad_id: string
+          created_at: string
+          event_type: string
+          id: string
+          page: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          event_type: string
+          id?: string
+          page?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          page?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ads: {
+        Row: {
+          ad_url: string
+          clicks: number
+          created_at: string
+          description: string | null
+          id: string
+          impressions: number
+          is_active: boolean
+          media_type: string
+          media_url: string | null
+          pages: string[]
+          position: string
+          redirect_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          ad_url: string
+          clicks?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          impressions?: number
+          is_active?: boolean
+          media_type?: string
+          media_url?: string | null
+          pages?: string[]
+          position?: string
+          redirect_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          ad_url?: string
+          clicks?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          impressions?: number
+          is_active?: boolean
+          media_type?: string
+          media_url?: string | null
+          pages?: string[]
+          position?: string
+          redirect_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -430,6 +516,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_ad_clicks: { Args: { ad_id: string }; Returns: undefined }
+      increment_ad_impressions: { Args: { ad_id: string }; Returns: undefined }
       increment_chat_messages: {
         Args: { _bot_id: string; _chat_id: number }
         Returns: undefined

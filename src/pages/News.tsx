@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Newspaper, Clock, Loader2 } from "lucide-react";
+import { AdBanner } from "@/components/AdBanner";
 
 interface NewsItem {
   id: string;
@@ -106,6 +107,7 @@ const News = () => {
       </div>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <AdBanner page="news" position="top" />
         {loading ? (
           <div className="flex items-center justify-center py-24">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -143,6 +145,7 @@ const News = () => {
             <p className="text-muted-foreground">Check back later for updates</p>
           </div>
         )}
+        <AdBanner page="news" position="bottom" />
       </main>
     </div>
   );
