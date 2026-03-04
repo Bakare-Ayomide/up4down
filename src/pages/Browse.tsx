@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { DownloadCard } from "@/components/DownloadCard";
 import { Loader2, Search, PackageOpen } from "lucide-react";
+import { AdBanner } from "@/components/AdBanner";
 
 interface Category {
   id: string;
@@ -113,6 +114,7 @@ const Browse = () => {
       </div>
       
       <main className="container mx-auto px-4 py-8">
+        <AdBanner page="browse" position="top" />
         <CategoryFilter
           categories={categories}
           selectedCategories={selectedCategories}
@@ -142,6 +144,7 @@ const Browse = () => {
             <p className="text-muted-foreground">Try adjusting your filters or check back later</p>
           </div>
         )}
+        <AdBanner page="browse" position="bottom" />
       </main>
     </div>
   );

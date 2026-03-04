@@ -15,6 +15,7 @@ import { ImageCarousel } from "@/components/ImageCarousel";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useFreeDownloads } from "@/hooks/useFreeDownloads";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { AdBanner } from "@/components/AdBanner";
 
 interface DownloadItem {
   id: string;
@@ -248,8 +249,9 @@ const Download = () => {
             </Card>
           </div>
 
-          {/* Sidebar */}
+            {/* Sidebar */}
           <div className="space-y-6">
+            <AdBanner page="download" position="sidebar" />
             <Card className="p-6 sticky top-24 border-border bg-card neon-border">
               {/* Download button */}
               <Button
