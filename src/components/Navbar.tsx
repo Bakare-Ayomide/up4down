@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Download, Menu, X, User, LogIn } from "lucide-react";
+import { Menu, X, User, LogIn } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useState, useEffect } from "react";
@@ -22,13 +22,8 @@ export const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between gap-4 h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 font-bold text-xl group">
-            <div className="h-10 w-10 rounded-xl flex items-center justify-center shadow-[var(--shadow-glow)] group-hover:animate-pulse-glow transition-all duration-300 bg-destructive">
-              <Download className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="hidden sm:inline font-bold tracking-tight">ZEROLORD
-              <span className="text-primary">4</span>Down
-            </span>
+          <Link to="/" className="flex items-center gap-2 font-bold text-xl group">
+            <span className="font-extrabold tracking-tight text-destructive text-2xl">ZEROLORD</span>
           </Link>
 
           {/* Search - Desktop */}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DownloadCard } from "@/components/DownloadCard";
 import { RelatedItems } from "@/components/RelatedItems";
 import { Download, Sparkles, Shield, Zap, ArrowRight, Star, Folder, ChevronRight } from "lucide-react";
+import { HeroImages } from "@/components/HeroImages";
 
 const Index = () => {
   const [featuredItems, setFeaturedItems] = useState<any[]>([]);
@@ -101,17 +102,7 @@ const Index = () => {
               <div className="hidden lg:block relative">
                 <div className="relative">
                   <div className="bg-card border border-border rounded-3xl p-8 shadow-[var(--shadow-card)] neon-border">
-                    <div className="grid grid-cols-2 gap-4">
-                      {[1, 2, 3, 4].map((i) => (
-                        <div
-                          key={i}
-                          className="aspect-square rounded-2xl bg-gradient-to-br from-muted to-secondary flex items-center justify-center animate-float"
-                          style={{ animationDelay: `${i * 0.5}s` }}
-                        >
-                          <Download className="h-8 w-8 text-primary/50" />
-                        </div>
-                      ))}
-                    </div>
+              <HeroImages />
                   </div>
                   
                   <div className="absolute -top-6 -right-6 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-[var(--shadow-glow)] animate-float font-semibold text-sm">
@@ -247,14 +238,7 @@ const Index = () => {
       <footer className="border-t border-border py-12 bg-card">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-destructive flex items-center justify-center shadow-[var(--shadow-glow)]">
-                <Download className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="font-bold text-xl">
-                ZEROLORD<span className="text-primary">4</span>Down
-              </span>
-            </div>
+            <span className="font-extrabold text-xl tracking-tight text-destructive">ZEROLORD</span>
             <p className="text-muted-foreground text-sm">
               © 2025 Zerolord. All rights reserved.
             </p>
