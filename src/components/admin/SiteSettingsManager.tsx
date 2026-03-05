@@ -21,6 +21,9 @@ export const SiteSettingsManager = () => {
     adsense_enabled: false,
     adsense_client_id: "",
     ad_slot_id: "",
+    adsterra_enabled: false,
+    adsterra_publisher_id: "",
+    adsterra_ad_key: "",
     custom_js_enabled: true,
   });
   const [payment, setPayment] = useState({
@@ -119,6 +122,22 @@ export const SiteSettingsManager = () => {
                 <div>
                   <Label>Ad Slot ID</Label>
                   <Input value={ads.ad_slot_id} onChange={(e) => setAds({ ...ads, ad_slot_id: e.target.value })} placeholder="1234567890" className="mt-1" />
+                </div>
+              </>
+            )}
+            <div className="flex items-center justify-between">
+              <Label>Enable Adsterra</Label>
+              <Switch checked={ads.adsterra_enabled} onCheckedChange={(v) => setAds({ ...ads, adsterra_enabled: v })} />
+            </div>
+            {ads.adsterra_enabled && (
+              <>
+                <div>
+                  <Label>Adsterra Publisher ID</Label>
+                  <Input value={ads.adsterra_publisher_id} onChange={(e) => setAds({ ...ads, adsterra_publisher_id: e.target.value })} placeholder="Your Publisher ID" className="mt-1" />
+                </div>
+                <div>
+                  <Label>Adsterra Ad Key</Label>
+                  <Input value={ads.adsterra_ad_key} onChange={(e) => setAds({ ...ads, adsterra_ad_key: e.target.value })} placeholder="Your Ad Key" className="mt-1" />
                 </div>
               </>
             )}

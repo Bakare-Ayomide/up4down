@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { DownloadCard } from "@/components/DownloadCard";
 import { RelatedItems } from "@/components/RelatedItems";
 import { Download, Sparkles, Shield, Zap, ArrowRight, Star, Folder, ChevronRight } from "lucide-react";
 import { HeroImages } from "@/components/HeroImages";
 import { AdBanner } from "@/components/AdBanner";
+import { AnnouncementBanner } from "@/components/AnnouncementBanner";
+import { WaitlistForm } from "@/components/WaitlistForm";
 
 const Index = () => {
   const [featuredItems, setFeaturedItems] = useState<any[]>([]);
@@ -35,6 +38,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <AnnouncementBanner />
       <Navbar />
 
       {/* Hero Section */}
@@ -52,9 +56,7 @@ const Index = () => {
               <div className="text-center lg:text-left">
                 <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-primary/20">
                   <Sparkles className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">
-                    Ultimate Download Hub
-                  </span>
+                  <span className="text-sm font-medium text-primary">Ultimate Download Hub</span>
                 </div>
 
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1] tracking-tight">
@@ -103,9 +105,8 @@ const Index = () => {
               <div className="hidden lg:block relative">
                 <div className="relative">
                   <div className="bg-card border border-border rounded-3xl p-8 shadow-[var(--shadow-card)] neon-border">
-              <HeroImages />
+                    <HeroImages />
                   </div>
-                  
                   <div className="absolute -top-6 -right-6 bg-primary text-primary-foreground rounded-2xl px-4 py-2 shadow-[var(--shadow-glow)] animate-float font-semibold text-sm">
                     ✨ Premium Access
                   </div>
@@ -120,9 +121,7 @@ const Index = () => {
       </section>
 
       {/* Top Ad */}
-      <div className="container mx-auto px-4">
-        <AdBanner page="home" position="top" />
-      </div>
+      <div className="container mx-auto px-4"><AdBanner page="home" position="top" /></div>
 
       {/* Features Section */}
       <section id="features" className="py-24 relative">
@@ -131,36 +130,15 @@ const Index = () => {
           <div className="text-center mb-16">
             <span className="text-primary font-semibold text-sm uppercase tracking-widest">Features</span>
             <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-5">Why Choose Us?</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Experience the best download platform with lightning-fast speeds
-            </p>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Experience the best download platform with lightning-fast speeds</p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
-              {
-                icon: Zap,
-                title: "Lightning Fast",
-                description: "Optimized servers deliver your files at maximum speed with zero throttling",
-                color: "from-primary/20 to-destructive/10",
-              },
-              {
-                icon: Shield,
-                title: "100% Secure",
-                description: "Every file is scanned and verified for your complete safety and peace of mind",
-                color: "from-primary/15 to-primary/5",
-              },
-              {
-                icon: Download,
-                title: "Massive Library",
-                description: "Access our ever-growing collection of apps, games, software, and more",
-                color: "from-destructive/20 to-primary/10",
-              },
+              { icon: Zap, title: "Lightning Fast", description: "Optimized servers deliver your files at maximum speed with zero throttling", color: "from-primary/20 to-destructive/10" },
+              { icon: Shield, title: "100% Secure", description: "Every file is scanned and verified for your complete safety and peace of mind", color: "from-primary/15 to-primary/5" },
+              { icon: Download, title: "Massive Library", description: "Access our ever-growing collection of apps, games, software, and more", color: "from-destructive/20 to-primary/10" },
             ].map((feature, index) => (
-              <div
-                key={index}
-                className="group p-8 rounded-3xl bg-card border border-border hover:border-primary/30 transition-all duration-500 hover:shadow-[var(--shadow-card-hover)] hover:-translate-y-1"
-              >
+              <div key={index} className="group p-8 rounded-3xl bg-card border border-border hover:border-primary/30 transition-all duration-500 hover:shadow-[var(--shadow-card-hover)] hover:-translate-y-1">
                 <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <feature.icon className="h-8 w-8 text-primary" />
                 </div>
@@ -183,12 +161,10 @@ const Index = () => {
               </div>
               <Link to="/browse">
                 <Button variant="ghost" className="text-primary hover:text-primary/80 group">
-                  View All
-                  <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  View All<ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>
-
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {categories.map((category) => (
                 <Link key={category.id} to={`/browse?category=${category.slug}`}>
@@ -196,9 +172,7 @@ const Index = () => {
                     <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/10 transition-colors">
                       <Folder className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>
-                    <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">
-                      {category.name}
-                    </h3>
+                    <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">{category.name}</h3>
                   </div>
                 </Link>
               ))}
@@ -218,12 +192,10 @@ const Index = () => {
               </div>
               <Link to="/browse">
                 <Button variant="outline" className="rounded-full group">
-                  See All Downloads
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  See All Downloads<ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredItems.map((item) => (
                 <DownloadCard key={item.id} item={item} />
@@ -234,9 +206,18 @@ const Index = () => {
       )}
 
       {/* Inline Ad */}
-      <div className="container mx-auto px-4">
-        <AdBanner page="home" position="inline" />
-      </div>
+      <div className="container mx-auto px-4"><AdBanner page="home" position="inline" /></div>
+
+      {/* Waitlist Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-3">Stay Updated</h2>
+          <p className="text-muted-foreground mb-6">Get notified about new releases and exclusive content</p>
+          <div className="flex justify-center">
+            <WaitlistForm source="homepage" />
+          </div>
+        </div>
+      </section>
 
       {/* All Downloads */}
       <section className="py-24">
@@ -246,21 +227,9 @@ const Index = () => {
       </section>
 
       {/* Bottom Ad */}
-      <div className="container mx-auto px-4">
-        <AdBanner page="home" position="bottom" />
-      </div>
+      <div className="container mx-auto px-4"><AdBanner page="home" position="bottom" /></div>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-12 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <span className="font-extrabold text-xl tracking-tight text-destructive">ZEROLORD</span>
-            <p className="text-muted-foreground text-sm">
-              © 2025 Zerolord. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
