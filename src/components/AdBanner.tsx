@@ -21,11 +21,25 @@ interface AdBannerProps {
 
 export const AdBanner = ({ page, position }: AdBannerProps) => {
   const [ads, setAds] = useState<Ad[]>([]);
+  const [isPaidUser, setIsPaidUser] = useState<boolean | null>(null);
   const trackedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+    checkSubscription();
     fetchAds();
   }, [page, position]);
+
+  const checkSubscription = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { setIsPaidUser(false); return; }
+    const { data } = await supabase
+      .from("subscriptions")
+      .select("status")
+      .eq("user_id", session.user.id)
+      .eq("status", "active")
+      .limit(1);
+    setIsPaidUser(data && data.length > 0);
+  };
 
   const fetchAds = async () => {
     const { data } = await supabase
@@ -42,24 +56,20 @@ export const AdBanner = ({ page, position }: AdBannerProps) => {
     trackedRef.current.add(ad.id);
     await supabase.rpc("increment_ad_impressions", { ad_id: ad.id });
     await supabase.from("ad_events").insert({
-      ad_id: ad.id,
-      event_type: "impression",
-      page,
-      user_agent: navigator.userAgent,
+      ad_id: ad.id, event_type: "impression", page, user_agent: navigator.userAgent,
     });
   };
 
   const handleClick = async (ad: Ad) => {
     await supabase.rpc("increment_ad_clicks", { ad_id: ad.id });
     await supabase.from("ad_events").insert({
-      ad_id: ad.id,
-      event_type: "click",
-      page,
-      user_agent: navigator.userAgent,
+      ad_id: ad.id, event_type: "click", page, user_agent: navigator.userAgent,
     });
     window.open(ad.redirect_url || ad.ad_url, "_blank");
   };
 
+  // Hide ads for paid users
+  if (isPaidUser === null || isPaidUser === true) return null;
   if (ads.length === 0) return null;
 
   return (
@@ -94,17 +104,9 @@ const AdItem = ({ ad, onClick, onVisible, position }: { ad: Ad; onClick: () => v
     >
       {ad.media_url && (
         ad.media_type === "video" ? (
-          <video
-            src={ad.media_url}
-            autoPlay muted loop playsInline
-            className={isHorizontal ? "h-20 w-32 object-cover shrink-0" : "w-full h-40 object-cover"}
-          />
+          <video src={ad.media_url} autoPlay muted loop playsInline className={isHorizontal ? "h-20 w-32 object-cover shrink-0" : "w-full h-40 object-cover"} />
         ) : (
-          <img
-            src={ad.media_url}
-            alt={ad.title}
-            className={isHorizontal ? "h-20 w-32 object-cover shrink-0" : "w-full h-40 object-cover"}
-          />
+          <img src={ad.media_url} alt={ad.title} className={isHorizontal ? "h-20 w-32 object-cover shrink-0" : "w-full h-40 object-cover"} />
         )
       )}
       <div className={`p-3 ${isHorizontal ? "flex-1 min-w-0" : ""}`}>

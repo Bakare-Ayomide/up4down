@@ -1,4 +1,4 @@
-import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen, Megaphone } from "lucide-react";
+import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen, Megaphone, Rocket, Bell, Mail, HelpCircle, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -16,9 +16,14 @@ const menuItems = [
   { id: "categories", label: "Categories", icon: FolderOpen },
   { id: "news", label: "News", icon: Newspaper },
   { id: "ads", label: "Ads", icon: Megaphone },
+  { id: "announcements", label: "Announcements", icon: Bell },
+  { id: "waitlist", label: "Waitlist", icon: Mail },
+  { id: "faq", label: "FAQ", icon: HelpCircle },
+  { id: "media", label: "Media", icon: Image },
   { id: "pages", label: "Pages", icon: FileText },
   { id: "roles", label: "Roles", icon: ShieldCheck },
   { id: "settings", label: "Settings", icon: Sliders },
+  { id: "launch", label: "Launch & SEO", icon: Rocket },
   { id: "telegram", label: "Bots", icon: Bot },
 ];
 
@@ -34,7 +39,7 @@ export const AdminSidebar = ({ activeTab, onTabChange, onLogout }: AdminSidebarP
         </div>
       </div>
 
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
         {menuItems.map((item) => (
           <button
             key={item.id}

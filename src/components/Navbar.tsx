@@ -58,6 +58,14 @@ export const Navbar = () => {
                 News
               </Button>
             </Link>
+            <Link to="/support">
+              <Button
+                variant={location.pathname === "/support" ? "default" : "ghost"}
+                size="sm"
+                className={`font-medium rounded-full px-5 ${location.pathname === "/support" ? "shadow-[var(--shadow-glow)]" : ""}`}>
+                Support
+              </Button>
+            </Link>
             <Link to={session ? "/account" : "/auth"}>
               <Button
                 variant={location.pathname === "/auth" || location.pathname === "/account" ? "default" : "ghost"}

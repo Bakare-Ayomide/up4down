@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
+import { SEOHead } from "@/components/SEOHead";
+import { AnalyticsInjector } from "@/components/AnalyticsInjector";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import Download from "./pages/Download";
@@ -13,6 +15,8 @@ import Auth from "./pages/Auth";
 import Account from "./pages/Account";
 import CustomPage from "./pages/CustomPage";
 import News from "./pages/News";
+import Support from "./pages/Support";
+import Waitlist from "./pages/Waitlist";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +25,8 @@ const App = () => (
   <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <SEOHead />
+        <AnalyticsInjector />
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -33,6 +39,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/account" element={<Account />} />
             <Route path="/news" element={<News />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/waitlist" element={<Waitlist />} />
             <Route path="/page/:slug" element={<CustomPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
