@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { CURRENCIES, convertCurrency, formatCurrency } from "@/lib/currency";
 import { AdBanner } from "@/components/AdBanner";
+import { AdBanner } from "@/components/AdBanner";
 
 const Payment = () => {
   const navigate = useNavigate();
