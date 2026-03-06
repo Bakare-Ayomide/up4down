@@ -115,6 +115,8 @@ const Browse = () => {
       
       <main className="container mx-auto px-4 py-8">
         <AdBanner page="browse" position="top" />
+        <AdBanner page="browse" position="after-header" />
+        <AdBanner page="browse" position="before-listing" />
         <CategoryFilter
           categories={categories}
           selectedCategories={selectedCategories}
@@ -144,6 +146,8 @@ const Browse = () => {
             <p className="text-muted-foreground">Try adjusting your filters or check back later</p>
           </div>
         )}
+        <AdBanner page="browse" position="after-listing" />
+        <AdBanner page="browse" position="before-footer" />
         <AdBanner page="browse" position="bottom" />
       </main>
     </div>

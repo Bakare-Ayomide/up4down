@@ -239,6 +239,8 @@ const Download = () => {
               </div>
             </Card>
 
+            <AdBanner page="download" position="after-description" />
+
             {/* Rating Card */}
             <Card className="p-8 border-border bg-card">
               <h2 className="font-semibold text-lg mb-4 flex items-center gap-2">
@@ -247,6 +249,8 @@ const Download = () => {
               </h2>
               <RatingInput itemId={item.id} onRatingSubmit={fetchItem} />
             </Card>
+
+            <AdBanner page="download" position="after-rating" />
           </div>
 
             {/* Sidebar */}

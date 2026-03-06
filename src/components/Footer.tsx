@@ -1,15 +1,7 @@
 import { Link } from "react-router-dom";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { WaitlistForm } from "@/components/WaitlistForm";
-
-const socialIcons: Record<string, string> = {
-  twitter_url: "𝕏",
-  instagram_url: "📷",
-  facebook_url: "f",
-  youtube_url: "▶",
-  telegram_url: "✈",
-  discord_url: "💬",
-};
+import { SOCIAL_ICON_MAP } from "@/components/SocialIcons";
 
 export const Footer = () => {
   const { settings } = useSiteSettings();
@@ -50,17 +42,21 @@ export const Footer = () => {
             </div>
             {socialEntries.length > 0 && (
               <div className="flex gap-3 mt-4">
-                {socialEntries.map(([key, url]) => (
-                  <a
-                    key={key}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center text-sm hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    {socialIcons[key] || "🔗"}
-                  </a>
-                ))}
+                {socialEntries.map(([key, url]) => {
+                  const IconComp = SOCIAL_ICON_MAP[key];
+                  return (
+                    <a
+                      key={key}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+                      aria-label={key.replace('_url', '')}
+                    >
+                      {IconComp ? <IconComp className="h-4 w-4" /> : <span className="text-sm">🔗</span>}
+                    </a>
+                  );
+                })}
               </div>
             )}
           </div>

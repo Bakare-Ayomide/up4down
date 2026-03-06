@@ -122,6 +122,7 @@ const Index = () => {
 
       {/* Top Ad */}
       <div className="container mx-auto px-4"><AdBanner page="home" position="top" /></div>
+      <div className="container mx-auto px-4"><AdBanner page="home" position="after-hero" /></div>
 
       {/* Features Section */}
       <section id="features" className="py-24 relative">
@@ -149,6 +150,8 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      <div className="container mx-auto px-4"><AdBanner page="home" position="after-features" /></div>
 
       {/* Categories Section */}
       {categories.length > 0 && (
@@ -180,6 +183,8 @@ const Index = () => {
           </div>
         </section>
       )}
+
+      <div className="container mx-auto px-4"><AdBanner page="home" position="after-categories" /></div>
 
       {/* Featured Downloads */}
       {featuredItems.length > 0 && (
@@ -227,6 +232,7 @@ const Index = () => {
       </section>
 
       {/* Bottom Ad */}
+      <div className="container mx-auto px-4"><AdBanner page="home" position="before-footer" /></div>
       <div className="container mx-auto px-4"><AdBanner page="home" position="bottom" /></div>
 
       <Footer />

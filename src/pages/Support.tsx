@@ -6,6 +6,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { Card } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Mail, ExternalLink, HelpCircle } from "lucide-react";
+import { AdBanner } from "@/components/AdBanner";
 
 interface FAQ {
   id: string;
@@ -64,6 +65,7 @@ const Support = () => {
           )}
         </div>
 
+        <AdBanner page="support" position="before-faq" />
         {/* FAQ */}
         {faqs.length > 0 && (
           <div>
@@ -78,6 +80,8 @@ const Support = () => {
             </Accordion>
           </div>
         )}
+        <AdBanner page="support" position="after-faq" />
+        <AdBanner page="support" position="bottom" />
       </div>
       <Footer />
     </div>
