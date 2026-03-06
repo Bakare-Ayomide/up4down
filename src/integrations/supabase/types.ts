@@ -17,26 +17,50 @@ export type Database = {
       ad_events: {
         Row: {
           ad_id: string
+          browser: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          device_type: string | null
           event_type: string
           id: string
+          ip_address: string | null
+          os: string | null
           page: string | null
+          referrer: string | null
+          screen_resolution: string | null
           user_agent: string | null
         }
         Insert: {
           ad_id: string
+          browser?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          device_type?: string | null
           event_type: string
           id?: string
+          ip_address?: string | null
+          os?: string | null
           page?: string | null
+          referrer?: string | null
+          screen_resolution?: string | null
           user_agent?: string | null
         }
         Update: {
           ad_id?: string
+          browser?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          device_type?: string | null
           event_type?: string
           id?: string
+          ip_address?: string | null
+          os?: string | null
           page?: string | null
+          referrer?: string | null
+          screen_resolution?: string | null
           user_agent?: string | null
         }
         Relationships: [
@@ -51,9 +75,12 @@ export type Database = {
       }
       ads: {
         Row: {
+          ad_size: string
           ad_url: string
           clicks: number
           created_at: string
+          custom_height: number | null
+          custom_width: number | null
           description: string | null
           id: string
           impressions: number
@@ -67,9 +94,12 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ad_size?: string
           ad_url: string
           clicks?: number
           created_at?: string
+          custom_height?: number | null
+          custom_width?: number | null
           description?: string | null
           id?: string
           impressions?: number
@@ -83,9 +113,12 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ad_size?: string
           ad_url?: string
           clicks?: number
           created_at?: string
+          custom_height?: number | null
+          custom_width?: number | null
           description?: string | null
           id?: string
           impressions?: number
