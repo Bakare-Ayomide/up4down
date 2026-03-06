@@ -108,6 +108,7 @@ const News = () => {
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <AdBanner page="news" position="top" />
+        <AdBanner page="news" position="after-header" />
         {loading ? (
           <div className="flex items-center justify-center py-24">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -145,6 +146,7 @@ const News = () => {
             <p className="text-muted-foreground">Check back later for updates</p>
           </div>
         )}
+        <AdBanner page="news" position="before-footer" />
         <AdBanner page="news" position="bottom" />
       </main>
     </div>

@@ -11,6 +11,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Crown, User, LogOut, Loader2, Save, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import { useSubscription } from "@/hooks/useSubscription";
+import { AdBanner } from "@/components/AdBanner";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -100,6 +101,7 @@ const Account = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container mx-auto px-4 py-8 max-w-2xl space-y-6">
+        <AdBanner page="account" position="top" />
         <h1 className="text-3xl font-bold">My Account</h1>
 
         {/* Profile */}
@@ -192,9 +194,11 @@ const Account = () => {
         </Card>
 
         {/* Logout */}
+        <AdBanner page="account" position="inline" />
         <Button variant="outline" onClick={handleLogout} className="w-full gap-2">
           <LogOut className="h-4 w-4" /> Log Out
         </Button>
+        <AdBanner page="account" position="bottom" />
       </main>
     </div>
   );

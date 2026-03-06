@@ -12,6 +12,7 @@ import { Crown, Check, ArrowLeft, CreditCard, Copy, Loader2 } from "lucide-react
 import { toast } from "sonner";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { CURRENCIES, convertCurrency, formatCurrency } from "@/lib/currency";
+import { AdBanner } from "@/components/AdBanner";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -290,6 +291,7 @@ const Payment = () => {
             </Card>
           </div>
         </div>
+        <AdBanner page="payment" position="bottom" />
       </main>
     </div>
   );
