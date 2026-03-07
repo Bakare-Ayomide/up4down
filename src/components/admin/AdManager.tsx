@@ -10,8 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Plus, Trash2, Edit2, Eye, MousePointerClick, BarChart3, Image, Video, X, Upload, FileDown, Globe, Monitor, Smartphone, Tablet } from "lucide-react";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const ALL_PAGES = [
   { id: "home", label: "Home" },
@@ -86,7 +86,7 @@ export const AdManager = () => {
   const [adUrl, setAdUrl] = useState("");
   const [redirectUrl, setRedirectUrl] = useState("");
   const [pages, setPages] = useState<string[]>([]);
-  const [position, setPosition] = useState("sidebar");
+  const [positions, setPositions] = useState<string[]>(["sidebar"]);
   const [adSize, setAdSize] = useState("medium");
   const [customWidth, setCustomWidth] = useState<number>(320);
   const [customHeight, setCustomHeight] = useState<number>(160);
@@ -103,12 +103,14 @@ export const AdManager = () => {
     let query = supabase.from("ad_events").select("*").order("created_at", { ascending: false }).limit(500);
     if (adId) query = query.eq("ad_id", adId);
     const { data } = await query;
-    if (data) setEvents(data);
+    const rows = (data || []) as any[];
+    setEvents(rows);
+    return rows;
   };
 
   const resetForm = () => {
     setTitle(""); setDescription(""); setMediaUrl(""); setMediaType("image");
-    setAdUrl(""); setRedirectUrl(""); setPages([]); setPosition("sidebar");
+    setAdUrl(""); setRedirectUrl(""); setPages([]); setPositions(["sidebar"]);
     setAdSize("medium"); setCustomWidth(320); setCustomHeight(160);
     setEditing(null); setShowForm(false);
   };
@@ -117,7 +119,7 @@ export const AdManager = () => {
     setEditing(ad); setTitle(ad.title); setDescription(ad.description || "");
     setMediaUrl(ad.media_url || ""); setMediaType(ad.media_type);
     setAdUrl(ad.ad_url); setRedirectUrl(ad.redirect_url || "");
-    setPages(ad.pages || []); setPosition(ad.position);
+    setPages(ad.pages || []); setPositions([ad.position]);
     setAdSize(ad.ad_size || "medium");
     setCustomWidth(ad.custom_width || 320); setCustomHeight(ad.custom_height || 160);
     setShowForm(true);
@@ -141,23 +143,48 @@ export const AdManager = () => {
 
   const handleSave = async () => {
     if (!title || !adUrl) { toast.error("Title and Ad URL are required"); return; }
+    if (pages.length === 0) { toast.error("Select at least one page"); return; }
+    if (positions.length === 0) { toast.error("Select at least one position"); return; }
+
     const payload = {
       title, description: description || null, media_url: mediaUrl || null,
       media_type: mediaType, ad_url: adUrl, redirect_url: redirectUrl || null,
-      pages, position, ad_size: adSize,
+      pages, ad_size: adSize,
       custom_width: adSize === "custom" ? customWidth : null,
       custom_height: adSize === "custom" ? customHeight : null,
     };
+
     if (editing) {
-      const { error } = await supabase.from("ads").update(payload).eq("id", editing.id);
-      if (error) { toast.error("Failed to update"); return; }
+      const [primaryPosition, ...extraPositions] = positions;
+      const { error: updateError } = await supabase
+        .from("ads")
+        .update({ ...payload, position: primaryPosition })
+        .eq("id", editing.id);
+
+      if (updateError) {
+        toast.error("Failed to update");
+        return;
+      }
+
+      if (extraPositions.length > 0) {
+        const cloneRows = extraPositions.map((pos) => ({ ...payload, position: pos }));
+        const { error: cloneError } = await supabase.from("ads").insert(cloneRows);
+        if (cloneError) {
+          toast.error("Ad updated, but failed to create additional positions");
+          return;
+        }
+      }
+
       toast.success("Ad updated!");
     } else {
-      const { error } = await supabase.from("ads").insert(payload);
+      const rows = positions.map((pos) => ({ ...payload, position: pos }));
+      const { error } = await supabase.from("ads").insert(rows);
       if (error) { toast.error("Failed to create"); return; }
-      toast.success("Ad created!");
+      toast.success(rows.length > 1 ? `Created ${rows.length} ad placements` : "Ad created!");
     }
-    resetForm(); fetchAds();
+
+    resetForm();
+    fetchAds();
   };
 
   const toggleActive = async (ad: Ad) => {
@@ -176,6 +203,11 @@ export const AdManager = () => {
   const togglePage = (pageId: string) => {
     setPages(prev => prev.includes(pageId) ? prev.filter(p => p !== pageId) : [...prev, pageId]);
   };
+  const togglePosition = (positionId: string) => {
+    setPositions((prev) => prev.includes(positionId)
+      ? prev.filter((p) => p !== positionId)
+      : [...prev, positionId]);
+  };
 
   // Aggregate helpers
   const groupBy = (arr: any[], key: string) => {
@@ -185,80 +217,85 @@ export const AdManager = () => {
   };
 
   // PDF Generation
-  const generatePdf = (ad?: Ad) => {
-    const doc = new jsPDF();
-    const isOverall = !ad;
-    const title = isOverall ? "Overall Ad Performance Report" : `Ad Report: ${ad.title}`;
-    const relevantEvents = isOverall ? events : events.filter(e => e.ad_id === ad?.id);
-    const impressions = relevantEvents.filter(e => e.event_type === "impression").length;
-    const clicks = relevantEvents.filter(e => e.event_type === "click").length;
-    const ctr = impressions > 0 ? ((clicks / impressions) * 100).toFixed(2) : "0";
+  const generatePdf = (ad?: Ad, sourceEvents?: any[]) => {
+    try {
+      const doc = new jsPDF();
+      const isOverall = !ad;
+      const reportEvents = sourceEvents ?? events;
+      const title = isOverall ? "Overall Ad Performance Report" : `Ad Report: ${ad.title}`;
+      const relevantEvents = isOverall ? reportEvents : reportEvents.filter(e => e.ad_id === ad?.id);
+      const impressions = relevantEvents.filter(e => e.event_type === "impression").length;
+      const clicks = relevantEvents.filter(e => e.event_type === "click").length;
+      const ctr = impressions > 0 ? ((clicks / impressions) * 100).toFixed(2) : "0";
 
-    // Header
-    doc.setFillColor(220, 38, 38);
-    doc.rect(0, 0, 210, 35, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(22); doc.setFont("helvetica", "bold");
-    doc.text("ZEROLORD", 14, 18);
-    doc.setFontSize(10); doc.setFont("helvetica", "normal");
-    doc.text("Ad Performance Report", 14, 27);
-    doc.text(new Date().toLocaleDateString(), 170, 27);
+      // Header
+      doc.setFillColor(220, 38, 38);
+      doc.rect(0, 0, 210, 35, "F");
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22); doc.setFont("helvetica", "bold");
+      doc.text("ZEROLORD", 14, 18);
+      doc.setFontSize(10); doc.setFont("helvetica", "normal");
+      doc.text("Ad Performance Report", 14, 27);
+      doc.text(new Date().toLocaleDateString(), 170, 27);
 
-    // Title
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(16); doc.setFont("helvetica", "bold");
-    doc.text(title, 14, 48);
+      // Title
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(16); doc.setFont("helvetica", "bold");
+      doc.text(title, 14, 48);
 
-    // Summary stats
-    doc.setFontSize(11); doc.setFont("helvetica", "normal");
-    let y = 58;
-    doc.text(`Total Impressions: ${isOverall ? ads.reduce((s, a) => s + a.impressions, 0) : impressions}`, 14, y); y += 7;
-    doc.text(`Total Clicks: ${isOverall ? ads.reduce((s, a) => s + a.clicks, 0) : clicks}`, 14, y); y += 7;
-    doc.text(`CTR: ${ctr}%`, 14, y); y += 7;
-    doc.text(`Events Analyzed: ${relevantEvents.length}`, 14, y); y += 12;
+      // Summary stats
+      doc.setFontSize(11); doc.setFont("helvetica", "normal");
+      let y = 58;
+      doc.text(`Total Impressions: ${isOverall ? ads.reduce((s, a) => s + a.impressions, 0) : impressions}`, 14, y); y += 7;
+      doc.text(`Total Clicks: ${isOverall ? ads.reduce((s, a) => s + a.clicks, 0) : clicks}`, 14, y); y += 7;
+      doc.text(`CTR: ${ctr}%`, 14, y); y += 7;
+      doc.text(`Events Analyzed: ${relevantEvents.length}`, 14, y); y += 12;
 
-    if (!isOverall && ad) {
-      doc.text(`URL: ${ad.ad_url}`, 14, y); y += 7;
-      doc.text(`Position: ${ad.position}`, 14, y); y += 7;
-      doc.text(`Pages: ${ad.pages?.join(", ") || "None"}`, 14, y); y += 12;
+      if (!isOverall && ad) {
+        doc.text(`URL: ${ad.ad_url}`, 14, y); y += 7;
+        doc.text(`Position: ${ad.position}`, 14, y); y += 7;
+        doc.text(`Pages: ${ad.pages?.join(", ") || "None"}`, 14, y); y += 12;
+      }
+
+      // Demographics tables
+      const addTable = (heading: string, data: [string, number][], startY: number) => {
+        doc.setFontSize(12); doc.setFont("helvetica", "bold");
+        doc.text(heading, 14, startY);
+        autoTable(doc, {
+          startY: startY + 3,
+          head: [["Value", "Count", "%"]],
+          body: data.map(([v, c]) => [v, c, relevantEvents.length > 0 ? ((c / relevantEvents.length) * 100).toFixed(1) + "%" : "0%"]),
+          theme: "striped",
+          headStyles: { fillColor: [220, 38, 38] },
+          margin: { left: 14, right: 14 },
+        });
+        return ((doc as any).lastAutoTable?.finalY || startY) + 10;
+      };
+
+      y = addTable("Countries", groupBy(relevantEvents, "country"), y);
+      y = addTable("Browsers", groupBy(relevantEvents, "browser"), y);
+
+      if (y > 240) { doc.addPage(); y = 20; }
+      y = addTable("Devices", groupBy(relevantEvents, "device_type"), y);
+      y = addTable("Operating Systems", groupBy(relevantEvents, "os"), y);
+
+      if (y > 240) { doc.addPage(); y = 20; }
+      y = addTable("Screen Resolutions", groupBy(relevantEvents, "screen_resolution"), y);
+      y = addTable("Pages", groupBy(relevantEvents, "page"), y);
+
+      // Footer
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8); doc.setTextColor(128, 128, 128);
+        doc.text(`Generated by Zerolord Ad Manager — Page ${i}/${pageCount}`, 14, 290);
+      }
+
+      doc.save(`${isOverall ? "overall" : ad!.title.replace(/\s+/g, "-")}-ad-report.pdf`);
+      toast.success("PDF downloaded!");
+    } catch {
+      toast.error("Failed to generate PDF");
     }
-
-    // Demographics tables
-    const addTable = (heading: string, data: [string, number][], startY: number) => {
-      doc.setFontSize(12); doc.setFont("helvetica", "bold");
-      doc.text(heading, 14, startY);
-      (doc as any).autoTable({
-        startY: startY + 3,
-        head: [["Value", "Count", "%"]],
-        body: data.map(([v, c]) => [v, c, relevantEvents.length > 0 ? ((c / relevantEvents.length) * 100).toFixed(1) + "%" : "0%"]),
-        theme: "striped",
-        headStyles: { fillColor: [220, 38, 38] },
-        margin: { left: 14, right: 14 },
-      });
-      return (doc as any).lastAutoTable.finalY + 10;
-    };
-
-    y = addTable("Countries", groupBy(relevantEvents, "country"), y);
-    y = addTable("Browsers", groupBy(relevantEvents, "browser"), y);
-    
-    if (y > 240) { doc.addPage(); y = 20; }
-    y = addTable("Devices", groupBy(relevantEvents, "device_type"), y);
-    y = addTable("Operating Systems", groupBy(relevantEvents, "os"), y);
-    
-    if (y > 240) { doc.addPage(); y = 20; }
-    y = addTable("Screen Resolutions", groupBy(relevantEvents, "screen_resolution"), y);
-    y = addTable("Pages", groupBy(relevantEvents, "page"), y);
-
-    // Footer
-    const pageCount = doc.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
-      doc.setFontSize(8); doc.setTextColor(128, 128, 128);
-      doc.text(`Generated by Zerolord Ad Manager — Page ${i}/${pageCount}`, 14, 290);
-    }
-
-    doc.save(`${isOverall ? "overall" : ad!.title.replace(/\s+/g, "-")}-ad-report.pdf`);
-    toast.success("PDF downloaded!");
   };
 
   // === STATS VIEW ===
@@ -385,26 +422,15 @@ export const AdManager = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">Media Type</label>
-              <Select value={mediaType} onValueChange={setMediaType}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="image">Image</SelectItem>
-                  <SelectItem value="video">Video</SelectItem>
-                  <SelectItem value="banner">Banner</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">Position / Section</label>
-              <Select value={position} onValueChange={setPosition}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {POSITIONS.map(p => <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
+          <div>
+            <label className="text-sm font-medium mb-2 block">Positions / Sections</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto rounded-md border border-border p-3">
+              {POSITIONS.map((item) => (
+                <label key={item.id} className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox checked={positions.includes(item.id)} onCheckedChange={() => togglePosition(item.id)} />
+                  <span className="text-sm">{item.label}</span>
+                </label>
+              ))}
             </div>
           </div>
 
@@ -482,8 +508,8 @@ export const AdManager = () => {
   const ctr = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : "0";
 
   const handleOverallPdf = async () => {
-    await fetchAdEvents();
-    setTimeout(() => generatePdf(), 500);
+    const reportEvents = await fetchAdEvents();
+    generatePdf(undefined, reportEvents);
   };
 
   return (

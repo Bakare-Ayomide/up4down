@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSubscription } from "@/hooks/useSubscription";
 import { ExternalLink } from "lucide-react";
 
 interface Ad {
@@ -72,25 +73,13 @@ const SIZE_CLASSES: Record<string, string> = {
 
 export const AdBanner = ({ page, position }: AdBannerProps) => {
   const [ads, setAds] = useState<Ad[]>([]);
-  const [isPaidUser, setIsPaidUser] = useState<boolean | null>(null);
   const trackedRef = useRef<Set<string>>(new Set());
+  const { isSubscribed, loading } = useSubscription();
 
   useEffect(() => {
-    checkSubscription();
     fetchAds();
   }, [page, position]);
 
-  const checkSubscription = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { setIsPaidUser(false); return; }
-    const { data } = await supabase
-      .from("subscriptions")
-      .select("status")
-      .eq("user_id", session.user.id)
-      .eq("status", "active")
-      .limit(1);
-    setIsPaidUser(data && data.length > 0);
-  };
 
   const fetchAds = async () => {
     const { data } = await supabase
@@ -138,8 +127,8 @@ export const AdBanner = ({ page, position }: AdBannerProps) => {
     window.open(ad.redirect_url || ad.ad_url, "_blank");
   };
 
-  // Hide ads for paid users
-  if (isPaidUser === null || isPaidUser === true) return null;
+  // Hide all ads for subscribed users
+  if (loading || isSubscribed) return null;
   if (ads.length === 0) return null;
 
   return (
