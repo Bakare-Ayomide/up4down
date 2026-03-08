@@ -124,12 +124,14 @@ export const CategoryManager = () => {
     if (!name || !slug) { toast.error("Name and slug are required"); return; }
     setSaving(true);
 
+    const normalizedIcon = normalizeIcon(icon);
+
     if (editing) {
-      const { error } = await supabase.from("categories").update({ name, slug, icon: icon || null }).eq("id", editing.id);
+      const { error } = await supabase.from("categories").update({ name, slug, icon: normalizedIcon }).eq("id", editing.id);
       if (error) toast.error(error.message);
       else { toast.success("Category updated"); resetForm(); fetchCategories(); }
     } else {
-      const { error } = await supabase.from("categories").insert({ name, slug, icon: icon || null });
+      const { error } = await supabase.from("categories").insert({ name, slug, icon: normalizedIcon });
       if (error) toast.error(error.message);
       else { toast.success("Category created"); resetForm(); fetchCategories(); }
     }
