@@ -119,7 +119,7 @@ export const AdManager = () => {
     setEditing(ad); setTitle(ad.title); setDescription(ad.description || "");
     setMediaUrl(ad.media_url || ""); setMediaType(ad.media_type);
     setAdUrl(ad.ad_url); setRedirectUrl(ad.redirect_url || "");
-    setPages(ad.pages || []); setPositions([ad.position]);
+    setPages(ad.pages || []); setPositions(ad.position ? ad.position.split(",") : ["sidebar"]);
     setAdSize(ad.ad_size || "medium");
     setCustomWidth(ad.custom_width || 320); setCustomHeight(ad.custom_height || 160);
     setShowForm(true);
@@ -154,33 +154,20 @@ export const AdManager = () => {
       custom_height: adSize === "custom" ? customHeight : null,
     };
 
+    // Store all positions as comma-separated in the position column (single row)
+    const positionValue = positions.join(",");
+
     if (editing) {
-      const [primaryPosition, ...extraPositions] = positions;
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from("ads")
-        .update({ ...payload, position: primaryPosition })
+        .update({ ...payload, position: positionValue })
         .eq("id", editing.id);
-
-      if (updateError) {
-        toast.error("Failed to update");
-        return;
-      }
-
-      if (extraPositions.length > 0) {
-        const cloneRows = extraPositions.map((pos) => ({ ...payload, position: pos }));
-        const { error: cloneError } = await supabase.from("ads").insert(cloneRows);
-        if (cloneError) {
-          toast.error("Ad updated, but failed to create additional positions");
-          return;
-        }
-      }
-
+      if (error) { toast.error("Failed to update"); return; }
       toast.success("Ad updated!");
     } else {
-      const rows = positions.map((pos) => ({ ...payload, position: pos }));
-      const { error } = await supabase.from("ads").insert(rows);
+      const { error } = await supabase.from("ads").insert({ ...payload, position: positionValue });
       if (error) { toast.error("Failed to create"); return; }
-      toast.success(rows.length > 1 ? `Created ${rows.length} ad placements` : "Ad created!");
+      toast.success("Ad created!");
     }
 
     resetForm();
@@ -530,7 +517,7 @@ export const AdManager = () => {
       </div>
 
       {/* Global stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="p-4 text-center">
           <Eye className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
           <div className="text-2xl font-bold">{totalImpressions}</div>
@@ -562,7 +549,7 @@ export const AdManager = () => {
         <div className="space-y-3">
           {ads.map(ad => (
             <Card key={ad.id} className="p-4">
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 {ad.media_url ? (
                   ad.media_type === "video" ? (
                     <div className="h-16 w-24 rounded-lg bg-muted flex items-center justify-center shrink-0">
@@ -586,7 +573,9 @@ export const AdManager = () => {
                   </div>
                   <div className="flex flex-wrap gap-1 mb-1">
                     {ad.pages?.map(p => <Badge key={p} variant="outline" className="text-xs">{p}</Badge>)}
-                    <Badge variant="outline" className="text-xs">{ad.position}</Badge>
+                    {ad.position?.split(",").map(pos => (
+                      <Badge key={pos} variant="outline" className="text-xs">{POSITIONS.find(p => p.id === pos)?.label || pos}</Badge>
+                    ))}
                     <Badge variant="outline" className="text-xs">{ad.ad_size}</Badge>
                   </div>
                   <div className="flex gap-4 text-xs text-muted-foreground">
@@ -595,7 +584,7 @@ export const AdManager = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                   <Switch checked={ad.is_active} onCheckedChange={() => toggleActive(ad)} />
                   <Button variant="ghost" size="icon" onClick={() => viewStats(ad)}><BarChart3 className="h-4 w-4" /></Button>
                   <Button variant="ghost" size="icon" onClick={() => startEdit(ad)}><Edit2 className="h-4 w-4" /></Button>

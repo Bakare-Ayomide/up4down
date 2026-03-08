@@ -8,7 +8,8 @@ export const Footer = () => {
   const social = settings.social_links;
   const app = settings.app_settings;
 
-  const socialEntries = Object.entries(social).filter(([, v]) => v);
+  const visibleIcons = (social as any).visible_icons || {};
+  const socialEntries = Object.entries(social).filter(([key, v]) => v && key !== 'visible_icons' && visibleIcons[key] !== false) as [string, string][];
 
   return (
     <footer className="border-t border-border py-12 bg-card">

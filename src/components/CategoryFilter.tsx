@@ -1,8 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import * as Icons from "lucide-react";
-import { LucideIcon } from "lucide-react";
+import { Folder } from "lucide-react";
 
 interface Category {
   id: string;
@@ -22,10 +19,6 @@ export const CategoryFilter = ({
   selectedCategories,
   onSelectCategories,
 }: CategoryFilterProps) => {
-  const getIcon = (iconName: string): LucideIcon => {
-    return (Icons[iconName as keyof typeof Icons] as LucideIcon) || Icons.Folder;
-  };
-
   const toggleCategory = (slug: string) => {
     if (selectedCategories.includes(slug)) {
       onSelectCategories(selectedCategories.filter(s => s !== slug));
@@ -50,7 +43,6 @@ export const CategoryFilter = ({
       </div>
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => {
-          const IconComponent = getIcon(category.icon);
           const isSelected = selectedCategories.includes(category.slug);
           return (
             <Button
@@ -59,7 +51,11 @@ export const CategoryFilter = ({
               onClick={() => toggleCategory(category.slug)}
               className={isSelected ? "bg-accent hover:bg-accent/90" : ""}
             >
-              <IconComponent className="mr-2 h-4 w-4" />
+              {category.icon ? (
+                <span className="mr-2 text-base">{category.icon}</span>
+              ) : (
+                <Folder className="mr-2 h-4 w-4" />
+              )}
               {category.name}
             </Button>
           );

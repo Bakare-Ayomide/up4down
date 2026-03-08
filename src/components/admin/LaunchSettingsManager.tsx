@@ -25,6 +25,7 @@ export const LaunchSettingsManager = () => {
   });
   const [socialLinks, setSocialLinks] = useState({
     twitter_url: "", instagram_url: "", facebook_url: "", youtube_url: "", telegram_url: "", discord_url: "",
+    visible_icons: { twitter_url: true, instagram_url: true, facebook_url: true, youtube_url: true, telegram_url: true, discord_url: true } as Record<string, boolean>,
   });
   const [appStore, setAppStore] = useState({
     app_store_keywords: "", short_description: "", long_description: "",
@@ -129,12 +130,28 @@ export const LaunchSettingsManager = () => {
 
         <TabsContent value="social">
           <Card className="p-6 space-y-4">
-            <Field label="Twitter / X URL" value={socialLinks.twitter_url} onChange={(v: string) => setSocialLinks(p => ({ ...p, twitter_url: v }))} />
-            <Field label="Instagram URL" value={socialLinks.instagram_url} onChange={(v: string) => setSocialLinks(p => ({ ...p, instagram_url: v }))} />
-            <Field label="Facebook URL" value={socialLinks.facebook_url} onChange={(v: string) => setSocialLinks(p => ({ ...p, facebook_url: v }))} />
-            <Field label="YouTube URL" value={socialLinks.youtube_url} onChange={(v: string) => setSocialLinks(p => ({ ...p, youtube_url: v }))} />
-            <Field label="Telegram URL" value={socialLinks.telegram_url} onChange={(v: string) => setSocialLinks(p => ({ ...p, telegram_url: v }))} />
-            <Field label="Discord URL" value={socialLinks.discord_url} onChange={(v: string) => setSocialLinks(p => ({ ...p, discord_url: v }))} />
+            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Social Media Links & Visibility</h3>
+            {[
+              { key: "twitter_url", label: "Twitter / X" },
+              { key: "instagram_url", label: "Instagram" },
+              { key: "facebook_url", label: "Facebook" },
+              { key: "youtube_url", label: "YouTube" },
+              { key: "telegram_url", label: "Telegram" },
+              { key: "discord_url", label: "Discord" },
+            ].map(({ key, label }) => (
+              <div key={key} className="flex items-center gap-3">
+                <Switch
+                  checked={socialLinks.visible_icons?.[key] !== false}
+                  onCheckedChange={(v) => setSocialLinks(p => ({
+                    ...p,
+                    visible_icons: { ...p.visible_icons, [key]: v },
+                  }))}
+                />
+                <div className="flex-1">
+                  <Field label={`${label} URL`} value={(socialLinks as any)[key]} onChange={(v: string) => setSocialLinks(p => ({ ...p, [key]: v }))} placeholder={`https://${label.toLowerCase()}.com/...`} />
+                </div>
+              </div>
+            ))}
             <SaveBtn onClick={() => save("social_links", socialLinks)} />
           </Card>
         </TabsContent>

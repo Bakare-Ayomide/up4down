@@ -86,7 +86,7 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
       </nav>
       <div className="flex">
         <div className="hidden lg:block"><AdminSidebar activeTab={activeTab} onTabChange={handleTabChange} onLogout={onLogout} /></div>
-        <main className="flex-1 p-6 lg:p-8 max-w-6xl">{renderContent()}</main>
+        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 max-w-6xl overflow-x-hidden">{renderContent()}</main>
       </div>
     </div>
   );
