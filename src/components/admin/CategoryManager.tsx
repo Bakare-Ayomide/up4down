@@ -26,6 +26,54 @@ const EMOJI_OPTIONS = [
   "⚡", "💎", "🧩", "🎁", "📡", "🔍", "🏠", "🎓", "🧰", "🪄",
 ];
 
+const LEGACY_ICON_MAP: Record<string, string> = {
+  gamepad: "🎮",
+  "game-pad-2": "🕹️",
+  smartphone: "📱",
+  monitor: "🖥️",
+  laptop: "💻",
+  shield: "🛡️",
+  sword: "⚔️",
+  target: "🎯",
+  music: "🎵",
+  film: "🎬",
+  image: "📸",
+  folder: "📁",
+  package: "📦",
+  settings: "⚙️",
+  plug: "🔌",
+  globe: "🌐",
+  bot: "🤖",
+  rocket: "🚀",
+  lightbulb: "💡",
+  palette: "🎨",
+  key: "🔑",
+  database: "💾",
+  shopping_cart: "🛒",
+  trophy: "🏆",
+  star: "⭐",
+  heart: "❤️",
+  flame: "🔥",
+  zap: "⚡",
+  gem: "💎",
+  puzzle: "🧩",
+  gift: "🎁",
+  home: "🏠",
+  graduation_cap: "🎓",
+  wrench: "🔧",
+  sparkles: "🪄",
+};
+
+const isEmoji = (value: string) => /\p{Extended_Pictographic}/u.test(value);
+
+const normalizeIcon = (value: string | null) => {
+  if (!value) return null;
+  const trimmed = value.trim();
+  const normalizedKey = trimmed.toLowerCase().replace(/\s+/g, "_");
+  if (LEGACY_ICON_MAP[normalizedKey]) return LEGACY_ICON_MAP[normalizedKey];
+  return isEmoji(trimmed) ? trimmed : null;
+};
+
 export const CategoryManager = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +90,12 @@ export const CategoryManager = () => {
 
   const fetchCategories = async () => {
     const { data } = await supabase.from("categories").select("*").order("name");
-    if (data) setCategories(data);
+    if (data) {
+      setCategories(data.map((category) => ({
+        ...category,
+        icon: normalizeIcon(category.icon),
+      })));
+    }
     setLoading(false);
   };
 
@@ -52,10 +105,11 @@ export const CategoryManager = () => {
   };
 
   const startEdit = (cat: Category) => {
+    const normalizedIcon = normalizeIcon(cat.icon);
     setEditing(cat);
     setName(cat.name);
     setSlug(cat.slug);
-    setIcon(cat.icon || "");
+    setIcon(normalizedIcon || "");
     setShowForm(true);
   };
 
@@ -70,12 +124,14 @@ export const CategoryManager = () => {
     if (!name || !slug) { toast.error("Name and slug are required"); return; }
     setSaving(true);
 
+    const normalizedIcon = normalizeIcon(icon);
+
     if (editing) {
-      const { error } = await supabase.from("categories").update({ name, slug, icon: icon || null }).eq("id", editing.id);
+      const { error } = await supabase.from("categories").update({ name, slug, icon: normalizedIcon }).eq("id", editing.id);
       if (error) toast.error(error.message);
       else { toast.success("Category updated"); resetForm(); fetchCategories(); }
     } else {
-      const { error } = await supabase.from("categories").insert({ name, slug, icon: icon || null });
+      const { error } = await supabase.from("categories").insert({ name, slug, icon: normalizedIcon });
       if (error) toast.error(error.message);
       else { toast.success("Category created"); resetForm(); fetchCategories(); }
     }

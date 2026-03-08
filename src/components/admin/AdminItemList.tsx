@@ -70,31 +70,31 @@ export const AdminItemList = ({ onEdit }: AdminItemListProps) => {
     <>
       <div className="grid gap-4">
         {items.map((item) => (
-          <Card key={item.id} className="p-4">
-            <div className="flex gap-4">
+          <Card key={item.id} className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               {item.thumbnail_url && (
                 <img
                   src={item.thumbnail_url}
                   alt={item.title}
-                  className="w-24 h-24 object-cover rounded"
+                  className="h-16 w-16 sm:h-24 sm:w-24 object-cover rounded self-start shrink-0"
                 />
               )}
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-lg truncate">{item.title}</h3>
-                      <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        {item.download_item_categories?.map((dic: any) => (
-                          <Badge key={dic.categories.slug} variant="secondary">
-                            {dic.categories.name}
-                          </Badge>
-                        ))}
-                        <Badge variant="outline">{item.file_type.toUpperCase()}</Badge>
-                      </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base sm:text-lg break-words">{item.title}</h3>
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+                      {item.download_item_categories?.map((dic: any) => (
+                        <Badge key={dic.categories.slug} variant="secondary">
+                          {dic.categories.name}
+                        </Badge>
+                      ))}
+                      <Badge variant="outline">{(item.file_type || "").toUpperCase()}</Badge>
                     </div>
+                  </div>
 
-                  <div className="flex gap-2 shrink-0">
+                  <div className="flex gap-2 self-end sm:self-start shrink-0">
                     <Button
                       variant="outline"
                       size="sm"
@@ -116,14 +116,14 @@ export const AdminItemList = ({ onEdit }: AdminItemListProps) => {
                   {item.description}
                 </p>
 
-                <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-xs sm:text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Eye className="h-4 w-4" />
-                    {item.download_count.toLocaleString()}
+                    {Number(item.download_count ?? 0).toLocaleString()}
                   </span>
                   <span className="flex items-center gap-1">
                     <Star className="h-4 w-4" />
-                    {item.average_rating.toFixed(1)} ({item.rating_count})
+                    {Number(item.average_rating ?? 0).toFixed(1)} ({Number(item.rating_count ?? 0)})
                   </span>
                 </div>
               </div>
