@@ -18,6 +18,14 @@ interface Category {
   icon: string | null;
 }
 
+const EMOJI_OPTIONS = [
+  "🎮", "🕹️", "📱", "💻", "🖥️", "🔓", "🛡️", "⚔️", "🎯", "🎲",
+  "🎵", "🎬", "📸", "📁", "📂", "📦", "🔧", "⚙️", "🔌", "🌐",
+  "🤖", "👾", "🚀", "💡", "📊", "📈", "🎨", "✏️", "📝", "📚",
+  "🔑", "💾", "🗂️", "📋", "🛒", "💰", "🏆", "⭐", "❤️", "🔥",
+  "⚡", "💎", "🧩", "🎁", "📡", "🔍", "🏠", "🎓", "🧰", "🪄",
+];
+
 export const CategoryManager = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,7 +84,6 @@ export const CategoryManager = () => {
 
   const handleDelete = async () => {
     if (!deleteId) return;
-    // Delete related item_categories first
     await supabase.from("download_item_categories").delete().eq("category_id", deleteId);
     await supabase.from("categories").delete().eq("id", deleteId);
     toast.success("Category deleted");
@@ -101,8 +108,28 @@ export const CategoryManager = () => {
             <Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="e.g. exploit" className="mt-1" />
           </div>
           <div>
-            <Label>Icon (emoji or text)</Label>
-            <Input value={icon} onChange={(e) => setIcon(e.target.value)} placeholder="e.g. 🔓" className="mt-1" />
+            <Label>Icon</Label>
+            <div className="mt-1 space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center text-2xl shrink-0">
+                  {icon || <Folder className="h-5 w-5 text-muted-foreground" />}
+                </div>
+                <Input value={icon} onChange={(e) => setIcon(e.target.value)} placeholder="Click an emoji below or paste one" className="flex-1" />
+                {icon && <Button variant="ghost" size="sm" onClick={() => setIcon("")}>Clear</Button>}
+              </div>
+              <div className="flex flex-wrap gap-1.5 p-3 rounded-lg border border-border bg-muted/30 max-h-32 overflow-y-auto">
+                {EMOJI_OPTIONS.map((emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={() => setIcon(emoji)}
+                    className={`h-9 w-9 rounded-lg flex items-center justify-center text-lg hover:bg-primary/10 transition-colors ${icon === emoji ? "bg-primary/20 ring-2 ring-primary" : ""}`}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
           <Button onClick={handleSave} disabled={saving} className="gap-2">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
@@ -132,7 +159,7 @@ export const CategoryManager = () => {
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                    {cat.icon ? <span className="text-lg">{cat.icon}</span> : <Folder className="h-5 w-5 text-muted-foreground" />}
+                    {cat.icon ? <span className="text-xl">{cat.icon}</span> : <Folder className="h-5 w-5 text-muted-foreground" />}
                   </div>
                   <div className="min-w-0">
                     <h3 className="font-semibold">{cat.name}</h3>
