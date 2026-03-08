@@ -517,7 +517,7 @@ export const AdManager = () => {
       </div>
 
       {/* Global stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="p-4 text-center">
           <Eye className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
           <div className="text-2xl font-bold">{totalImpressions}</div>
