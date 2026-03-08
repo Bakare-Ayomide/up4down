@@ -154,33 +154,20 @@ export const AdManager = () => {
       custom_height: adSize === "custom" ? customHeight : null,
     };
 
+    // Store all positions as comma-separated in the position column (single row)
+    const positionValue = positions.join(",");
+
     if (editing) {
-      const [primaryPosition, ...extraPositions] = positions;
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from("ads")
-        .update({ ...payload, position: primaryPosition })
+        .update({ ...payload, position: positionValue })
         .eq("id", editing.id);
-
-      if (updateError) {
-        toast.error("Failed to update");
-        return;
-      }
-
-      if (extraPositions.length > 0) {
-        const cloneRows = extraPositions.map((pos) => ({ ...payload, position: pos }));
-        const { error: cloneError } = await supabase.from("ads").insert(cloneRows);
-        if (cloneError) {
-          toast.error("Ad updated, but failed to create additional positions");
-          return;
-        }
-      }
-
+      if (error) { toast.error("Failed to update"); return; }
       toast.success("Ad updated!");
     } else {
-      const rows = positions.map((pos) => ({ ...payload, position: pos }));
-      const { error } = await supabase.from("ads").insert(rows);
+      const { error } = await supabase.from("ads").insert({ ...payload, position: positionValue });
       if (error) { toast.error("Failed to create"); return; }
-      toast.success(rows.length > 1 ? `Created ${rows.length} ad placements` : "Ad created!");
+      toast.success("Ad created!");
     }
 
     resetForm();
