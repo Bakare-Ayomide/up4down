@@ -25,6 +25,7 @@ export const LaunchSettingsManager = () => {
   });
   const [socialLinks, setSocialLinks] = useState({
     twitter_url: "", instagram_url: "", facebook_url: "", youtube_url: "", telegram_url: "", discord_url: "",
+    visible_icons: { twitter_url: true, instagram_url: true, facebook_url: true, youtube_url: true, telegram_url: true, discord_url: true } as Record<string, boolean>,
   });
   const [appStore, setAppStore] = useState({
     app_store_keywords: "", short_description: "", long_description: "",
