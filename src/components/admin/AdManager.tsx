@@ -584,7 +584,7 @@ export const AdManager = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                   <Switch checked={ad.is_active} onCheckedChange={() => toggleActive(ad)} />
                   <Button variant="ghost" size="icon" onClick={() => viewStats(ad)}><BarChart3 className="h-4 w-4" /></Button>
                   <Button variant="ghost" size="icon" onClick={() => startEdit(ad)}><Edit2 className="h-4 w-4" /></Button>

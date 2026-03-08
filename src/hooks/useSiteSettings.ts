@@ -82,7 +82,7 @@ const defaults: SiteSettings = {
   payment_settings: { bank_name: "", account_name: "", account_number: "", routing_number: "", instructions: "", payment_methods: [] },
   app_settings: { app_name: "Zerolord", app_description: "Download Apps, Games, Software & More", support_email: "", support_url: "", privacy_policy_url: "", terms_of_service_url: "", website_url: "" },
   seo_settings: { meta_title: "Zerolord - Download Apps, Games, Software & More", meta_description: "Download thousands of apps, games, software, videos, and files.", meta_keywords: "download,apps,games,software", og_title: "Zerolord", og_description: "Your ultimate download platform", og_image: "", og_url: "", twitter_card_type: "summary_large_image", twitter_title: "", twitter_description: "", twitter_image: "" },
-  social_links: { twitter_url: "", instagram_url: "", facebook_url: "", youtube_url: "", telegram_url: "", discord_url: "" },
+  social_links: { twitter_url: "", instagram_url: "", facebook_url: "", youtube_url: "", telegram_url: "", discord_url: "", visible_icons: { twitter_url: true, instagram_url: true, facebook_url: true, youtube_url: true, telegram_url: true, discord_url: true } },
   app_store_settings: { app_store_keywords: "", short_description: "", long_description: "", promotional_text: "", app_store_support_url: "", app_store_marketing_url: "" },
   analytics_settings: { google_analytics_id: "", facebook_pixel_id: "" },
   indexnow_settings: { enabled: false, api_key: "" },

@@ -86,9 +86,14 @@ export const AdBanner = ({ page, position }: AdBannerProps) => {
       .from("ads")
       .select("*")
       .eq("is_active", true)
-      .eq("position", position)
       .contains("pages", [page]);
-    if (data) setAds(data as any);
+    if (data) {
+      // Filter ads whose comma-separated position field includes this position
+      const matched = (data as any[]).filter((ad: Ad) =>
+        ad.position?.split(",").map((p: string) => p.trim()).includes(position)
+      );
+      setAds(matched);
+    }
   };
 
   const collectEventData = async () => {
