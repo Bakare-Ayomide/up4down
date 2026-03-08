@@ -51,6 +51,7 @@ export interface SiteSettings {
     youtube_url: string;
     telegram_url: string;
     discord_url: string;
+    visible_icons: Record<string, boolean>;
   };
   app_store_settings: {
     app_store_keywords: string;
