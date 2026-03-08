@@ -549,7 +549,7 @@ export const AdManager = () => {
         <div className="space-y-3">
           {ads.map(ad => (
             <Card key={ad.id} className="p-4">
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 {ad.media_url ? (
                   ad.media_type === "video" ? (
                     <div className="h-16 w-24 rounded-lg bg-muted flex items-center justify-center shrink-0">
