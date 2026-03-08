@@ -267,24 +267,28 @@ export const NewsManager = () => {
       {loading ? <p>Loading...</p> : (
         <div className="grid gap-3">
           {items.map((item) => (
-            <Card key={item.id} className="p-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 min-w-0">
+            <Card key={item.id} className="p-3 sm:p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   {item.thumbnail_url ? (
-                    <img src={item.thumbnail_url} alt="" className="h-12 w-12 rounded-lg object-cover shrink-0" />
+                    <img src={item.thumbnail_url} alt="" className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg object-cover shrink-0" />
                   ) : (
-                    <Newspaper className="h-5 w-5 text-muted-foreground shrink-0" />
+                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                      <Newspaper className="h-5 w-5 text-muted-foreground" />
+                    </div>
                   )}
-                  <div className="min-w-0">
-                    <h3 className="font-semibold truncate">{item.title}</h3>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-semibold text-sm sm:text-base truncate max-w-[150px] sm:max-w-none">{item.title}</h3>
+                      <Badge variant={item.published ? "default" : "secondary"} className="shrink-0 text-xs">
+                        {item.published ? "Live" : "Draft"}
+                      </Badge>
+                    </div>
                     <p className="text-xs text-muted-foreground">{new Date(item.created_at).toLocaleDateString()}</p>
                   </div>
-                  <Badge variant={item.published ? "default" : "secondary"}>
-                    {item.published ? "Live" : "Draft"}
-                  </Badge>
                 </div>
-                <div className="flex gap-2 shrink-0">
-                  <Button size="sm" variant="outline" onClick={() => startEdit(item)} className="gap-1">
+                <div className="flex gap-2 shrink-0 self-end sm:self-center">
+                  <Button size="sm" variant="outline" onClick={() => startEdit(item)} className="gap-1 text-xs sm:text-sm">
                     <Edit2 className="h-3.5 w-3.5" /> Edit
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setDeleteId(item.id)}>
