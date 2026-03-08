@@ -573,7 +573,9 @@ export const AdManager = () => {
                   </div>
                   <div className="flex flex-wrap gap-1 mb-1">
                     {ad.pages?.map(p => <Badge key={p} variant="outline" className="text-xs">{p}</Badge>)}
-                    <Badge variant="outline" className="text-xs">{ad.position}</Badge>
+                    {ad.position?.split(",").map(pos => (
+                      <Badge key={pos} variant="outline" className="text-xs">{POSITIONS.find(p => p.id === pos)?.label || pos}</Badge>
+                    ))}
                     <Badge variant="outline" className="text-xs">{ad.ad_size}</Badge>
                   </div>
                   <div className="flex gap-4 text-xs text-muted-foreground">
