@@ -105,10 +105,11 @@ export const CategoryManager = () => {
   };
 
   const startEdit = (cat: Category) => {
+    const normalizedIcon = normalizeIcon(cat.icon);
     setEditing(cat);
     setName(cat.name);
     setSlug(cat.slug);
-    setIcon(cat.icon || "");
+    setIcon(normalizedIcon || "");
     setShowForm(true);
   };
 
