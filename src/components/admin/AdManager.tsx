@@ -119,7 +119,7 @@ export const AdManager = () => {
     setEditing(ad); setTitle(ad.title); setDescription(ad.description || "");
     setMediaUrl(ad.media_url || ""); setMediaType(ad.media_type);
     setAdUrl(ad.ad_url); setRedirectUrl(ad.redirect_url || "");
-    setPages(ad.pages || []); setPositions([ad.position]);
+    setPages(ad.pages || []); setPositions(ad.position ? ad.position.split(",") : ["sidebar"]);
     setAdSize(ad.ad_size || "medium");
     setCustomWidth(ad.custom_width || 320); setCustomHeight(ad.custom_height || 160);
     setShowForm(true);
