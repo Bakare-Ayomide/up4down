@@ -51,7 +51,7 @@ const Browse = () => {
       .from("categories")
       .select("*")
       .order("name");
-    if (data) setCategories(data);
+    if (data) setCategories(data.map(c => ({ ...c, icon: normalizeIcon(c.icon) || "" })));
   };
 
   const fetchItems = async () => {
