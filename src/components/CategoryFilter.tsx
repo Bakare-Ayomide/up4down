@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Folder } from "lucide-react";
+import { normalizeIcon } from "@/lib/normalizeIcon";
 
 interface Category {
   id: string;
