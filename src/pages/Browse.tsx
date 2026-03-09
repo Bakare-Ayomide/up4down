@@ -6,6 +6,7 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { DownloadCard } from "@/components/DownloadCard";
 import { Loader2, Search, PackageOpen } from "lucide-react";
 import { AdBanner } from "@/components/AdBanner";
+import { normalizeIcon } from "@/lib/normalizeIcon";
 
 interface Category {
   id: string;
@@ -50,7 +51,7 @@ const Browse = () => {
       .from("categories")
       .select("*")
       .order("name");
-    if (data) setCategories(data);
+    if (data) setCategories(data.map(c => ({ ...c, icon: normalizeIcon(c.icon) || "" })));
   };
 
   const fetchItems = async () => {

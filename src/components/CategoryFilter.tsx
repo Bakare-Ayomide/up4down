@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Folder } from "lucide-react";
+import { normalizeIcon } from "@/lib/normalizeIcon";
 
 interface Category {
   id: string;
@@ -51,8 +52,8 @@ export const CategoryFilter = ({
               onClick={() => toggleCategory(category.slug)}
               className={isSelected ? "bg-accent hover:bg-accent/90" : ""}
             >
-              {category.icon ? (
-                <span className="mr-2 text-base">{category.icon}</span>
+              {normalizeIcon(category.icon) ? (
+                <span className="mr-2 text-base">{normalizeIcon(category.icon)}</span>
               ) : (
                 <Folder className="mr-2 h-4 w-4" />
               )}

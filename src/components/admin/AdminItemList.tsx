@@ -70,59 +70,47 @@ export const AdminItemList = ({ onEdit }: AdminItemListProps) => {
     <>
       <div className="grid gap-4">
         {items.map((item) => (
-          <Card key={item.id} className="p-3 sm:p-4">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <Card key={item.id} className="p-3">
+            <div className="flex items-start gap-3">
               {item.thumbnail_url && (
                 <img
                   src={item.thumbnail_url}
                   alt={item.title}
-                  className="h-16 w-16 sm:h-24 sm:w-24 object-cover rounded self-start shrink-0"
+                  className="h-12 w-12 sm:h-16 sm:w-16 object-cover rounded shrink-0"
                 />
               )}
 
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-base sm:text-lg break-words">{item.title}</h3>
-                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-sm sm:text-base truncate">{item.title}</h3>
+                    <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                       {item.download_item_categories?.map((dic: any) => (
-                        <Badge key={dic.categories.slug} variant="secondary">
+                        <Badge key={dic.categories.slug} variant="secondary" className="text-xs px-1.5 py-0">
                           {dic.categories.name}
                         </Badge>
                       ))}
-                      <Badge variant="outline">{(item.file_type || "").toUpperCase()}</Badge>
+                      <Badge variant="outline" className="text-xs px-1.5 py-0">{(item.file_type || "").toUpperCase()}</Badge>
                     </div>
                   </div>
 
-                  <div className="flex gap-2 self-end sm:self-start shrink-0">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onEdit(item)}
-                    >
-                      <Pencil className="h-4 w-4" />
+                  <div className="flex gap-1 shrink-0">
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => onEdit(item)}>
+                      <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setDeleteId(item.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setDeleteId(item.id)}>
+                      <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </div>
 
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                  {item.description}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-xs sm:text-sm text-muted-foreground">
+                <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <Eye className="h-4 w-4" />
+                    <Eye className="h-3 w-3" />
                     {Number(item.download_count ?? 0).toLocaleString()}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Star className="h-4 w-4" />
+                    <Star className="h-3 w-3" />
                     {Number(item.average_rating ?? 0).toFixed(1)} ({Number(item.rating_count ?? 0)})
                   </span>
                 </div>
