@@ -149,6 +149,7 @@ const Browse = () => {
           </div>
         )}
         <AdBanner page="browse" position="after-listing" />
+        <AdSlot placement="browse-page" />
         <AdBanner page="browse" position="before-footer" />
         <AdBanner page="browse" position="bottom" />
       </main>
