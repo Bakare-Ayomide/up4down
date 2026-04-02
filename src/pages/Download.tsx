@@ -266,6 +266,7 @@ const Download = () => {
             </Card>
 
             <AdBanner page="download" position="after-rating" />
+            <AdSlot placement="download-page" />
           </div>
 
             {/* Sidebar */}
