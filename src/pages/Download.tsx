@@ -273,14 +273,25 @@ const Download = () => {
             <AdBanner page="download" position="sidebar" />
             <Card className="p-6 sticky top-24 border-border bg-card neon-border">
               {/* Download button */}
-              <Button
-                onClick={handleDownloadClick}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[var(--shadow-glow)] hover:shadow-[var(--neon-glow)] transition-all duration-500 rounded-xl h-14 text-lg font-semibold glow-button"
-                size="lg"
-              >
-                <DownloadIcon className="mr-2 h-5 w-5" />
-                Download Now
-              </Button>
+              {!session ? (
+                <Button
+                  onClick={() => navigate("/auth")}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-14 text-lg font-semibold"
+                  size="lg"
+                >
+                  <LogIn className="mr-2 h-5 w-5" />
+                  Sign In to Download
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleDownloadClick}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[var(--shadow-glow)] hover:shadow-[var(--neon-glow)] transition-all duration-500 rounded-xl h-14 text-lg font-semibold glow-button"
+                  size="lg"
+                >
+                  <DownloadIcon className="mr-2 h-5 w-5" />
+                  Download Now
+                </Button>
+              )}
 
               {/* File details */}
               <div className="mt-8 space-y-4">
