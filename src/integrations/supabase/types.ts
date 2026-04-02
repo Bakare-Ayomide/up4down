@@ -73,6 +73,42 @@ export type Database = {
           },
         ]
       }
+      ad_snippets: {
+        Row: {
+          ad_type: string
+          created_at: string
+          id: string
+          name: string
+          placement: string
+          preview_notes: string | null
+          snippet: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          ad_type?: string
+          created_at?: string
+          id?: string
+          name: string
+          placement?: string
+          preview_notes?: string | null
+          snippet: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          ad_type?: string
+          created_at?: string
+          id?: string
+          name?: string
+          placement?: string
+          preview_notes?: string | null
+          snippet?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ads: {
         Row: {
           ad_size: string
