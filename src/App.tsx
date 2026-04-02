@@ -17,6 +17,7 @@ import CustomPage from "./pages/CustomPage";
 import News from "./pages/News";
 import Support from "./pages/Support";
 import Waitlist from "./pages/Waitlist";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/news" element={<News />} />
             <Route path="/support" element={<Support />} />
             <Route path="/waitlist" element={<Waitlist />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/page/:slug" element={<CustomPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

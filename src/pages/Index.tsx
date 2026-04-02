@@ -9,6 +9,7 @@ import { RelatedItems } from "@/components/RelatedItems";
 import { Download, Sparkles, Shield, Zap, ArrowRight, Star, Folder, ChevronRight } from "lucide-react";
 import { HeroImages } from "@/components/HeroImages";
 import { AdBanner } from "@/components/AdBanner";
+import { AdSlot } from "@/components/AdSlot";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { WaitlistForm } from "@/components/WaitlistForm";
 
@@ -123,6 +124,7 @@ const Index = () => {
       {/* Top Ad */}
       <div className="container mx-auto px-4"><AdBanner page="home" position="top" /></div>
       <div className="container mx-auto px-4"><AdBanner page="home" position="after-hero" /></div>
+      <div className="container mx-auto px-4"><AdSlot placement="home-page" /></div>
 
       {/* Features Section */}
       <section id="features" className="py-24 relative">

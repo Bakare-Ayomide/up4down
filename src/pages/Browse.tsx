@@ -6,6 +6,7 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { DownloadCard } from "@/components/DownloadCard";
 import { Loader2, Search, PackageOpen } from "lucide-react";
 import { AdBanner } from "@/components/AdBanner";
+import { AdSlot } from "@/components/AdSlot";
 import { normalizeIcon } from "@/lib/normalizeIcon";
 
 interface Category {
@@ -148,6 +149,7 @@ const Browse = () => {
           </div>
         )}
         <AdBanner page="browse" position="after-listing" />
+        <AdSlot placement="browse-page" />
         <AdBanner page="browse" position="before-footer" />
         <AdBanner page="browse" position="bottom" />
       </main>

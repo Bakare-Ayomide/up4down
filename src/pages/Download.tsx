@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -9,13 +9,14 @@ import { RatingDisplay } from "@/components/RatingDisplay";
 import { RatingInput } from "@/components/RatingInput";
 import { RelatedItems } from "@/components/RelatedItems";
 import { DownloadModal } from "@/components/DownloadModal";
-import { Download as DownloadIcon, Eye, Star, Clock, ArrowLeft, FileType, HardDrive, Tag, Sparkles } from "lucide-react";
+import { Download as DownloadIcon, Eye, Star, Clock, ArrowLeft, FileType, HardDrive, Tag, Sparkles, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { ImageCarousel } from "@/components/ImageCarousel";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useFreeDownloads } from "@/hooks/useFreeDownloads";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { AdBanner } from "@/components/AdBanner";
+import { AdSlot } from "@/components/AdSlot";
 
 interface DownloadItem {
   id: string;
@@ -40,13 +41,21 @@ interface Category {
 
 const Download = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [item, setItem] = useState<DownloadItem | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [session, setSession] = useState<any>(null);
   const { isSubscribed } = useSubscription();
   const { recordDownload } = useFreeDownloads();
   const { settings } = useSiteSettings();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     fetchItem();
@@ -78,6 +87,12 @@ const Download = () => {
   };
 
   const handleDownloadClick = () => {
+    // Require sign-in for all downloads
+    if (!session) {
+      toast.error("Please sign in to download");
+      navigate("/auth");
+      return;
+    }
     if (isSubscribed) {
       executeDownload();
     } else {
@@ -251,6 +266,7 @@ const Download = () => {
             </Card>
 
             <AdBanner page="download" position="after-rating" />
+            <AdSlot placement="download-page" />
           </div>
 
             {/* Sidebar */}
@@ -258,14 +274,25 @@ const Download = () => {
             <AdBanner page="download" position="sidebar" />
             <Card className="p-6 sticky top-24 border-border bg-card neon-border">
               {/* Download button */}
-              <Button
-                onClick={handleDownloadClick}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[var(--shadow-glow)] hover:shadow-[var(--neon-glow)] transition-all duration-500 rounded-xl h-14 text-lg font-semibold glow-button"
-                size="lg"
-              >
-                <DownloadIcon className="mr-2 h-5 w-5" />
-                Download Now
-              </Button>
+              {!session ? (
+                <Button
+                  onClick={() => navigate("/auth")}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-14 text-lg font-semibold"
+                  size="lg"
+                >
+                  <LogIn className="mr-2 h-5 w-5" />
+                  Sign In to Download
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleDownloadClick}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[var(--shadow-glow)] hover:shadow-[var(--neon-glow)] transition-all duration-500 rounded-xl h-14 text-lg font-semibold glow-button"
+                  size="lg"
+                >
+                  <DownloadIcon className="mr-2 h-5 w-5" />
+                  Download Now
+                </Button>
+              )}
 
               {/* File details */}
               <div className="mt-8 space-y-4">
