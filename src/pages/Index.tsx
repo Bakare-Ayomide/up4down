@@ -9,6 +9,7 @@ import { RelatedItems } from "@/components/RelatedItems";
 import { Download, Sparkles, Shield, Zap, ArrowRight, Star, Folder, ChevronRight } from "lucide-react";
 import { HeroImages } from "@/components/HeroImages";
 import { AdBanner } from "@/components/AdBanner";
+import { AdSlot } from "@/components/AdSlot";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { WaitlistForm } from "@/components/WaitlistForm";
 

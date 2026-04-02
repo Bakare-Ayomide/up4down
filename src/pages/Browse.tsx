@@ -6,6 +6,7 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { DownloadCard } from "@/components/DownloadCard";
 import { Loader2, Search, PackageOpen } from "lucide-react";
 import { AdBanner } from "@/components/AdBanner";
+import { AdSlot } from "@/components/AdSlot";
 import { normalizeIcon } from "@/lib/normalizeIcon";
 
 interface Category {
