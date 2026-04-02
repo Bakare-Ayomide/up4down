@@ -124,6 +124,7 @@ const Index = () => {
       {/* Top Ad */}
       <div className="container mx-auto px-4"><AdBanner page="home" position="top" /></div>
       <div className="container mx-auto px-4"><AdBanner page="home" position="after-hero" /></div>
+      <div className="container mx-auto px-4"><AdSlot placement="home-page" /></div>
 
       {/* Features Section */}
       <section id="features" className="py-24 relative">
