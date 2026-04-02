@@ -1,4 +1,7 @@
-import { corsHeaders } from '@supabase/supabase-js/cors'
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -14,8 +17,6 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Use Deno's TCP to connect to IMAP - simplified fetch of recent emails
-    // Note: Full IMAP is complex. This provides basic functionality.
     const conn = await Deno.connectTls({
       hostname: imap_config.host,
       port: imap_config.port || 993,
@@ -31,11 +32,9 @@ Deno.serve(async (req) => {
       return decoder.decode(buf.subarray(0, n || 0))
     }
 
-    // Read greeting
     const greetBuf = new Uint8Array(4096)
     await conn.read(greetBuf)
 
-    // Login
     const loginResp = await sendCommand(`a1 LOGIN "${imap_config.username}" "${imap_config.password}"`)
     if (!loginResp.includes("OK")) {
       conn.close()
@@ -44,13 +43,10 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Select INBOX
     await sendCommand("a2 SELECT INBOX")
 
-    // Fetch last 20 message headers
     const fetchResp = await sendCommand("a3 FETCH 1:20 (BODY.PEEK[HEADER.FIELDS (FROM SUBJECT DATE)])")
 
-    // Parse basic email info from response
     const emails: any[] = []
     const lines = fetchResp.split("\r\n")
     let current: any = {}
@@ -68,7 +64,6 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Logout
     await sendCommand("a4 LOGOUT")
     conn.close()
 

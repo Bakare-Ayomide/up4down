@@ -1,4 +1,7 @@
-import { corsHeaders } from '@supabase/supabase-js/cors'
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -14,7 +17,6 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Use Deno's built-in SMTP via denodrivers/smtp
     const { SMTPClient } = await import("https://deno.land/x/denomailer@1.6.0/mod.ts")
 
     const client = new SMTPClient({
