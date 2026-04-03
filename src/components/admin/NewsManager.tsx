@@ -137,15 +137,49 @@ export const NewsManager = () => {
       published,
     };
 
+    let savedNewsId: string | null = null;
+
     if (editing) {
       const { error } = await supabase.from("news").update(payload).eq("id", editing.id);
-      if (error) toast.error(error.message);
-      else { toast.success("News updated!"); resetForm(); fetchNews(); }
+      if (error) { toast.error(error.message); setSaving(false); return; }
+      savedNewsId = editing.id;
+      toast.success("News updated!");
     } else {
-      const { error } = await supabase.from("news").insert(payload);
-      if (error) toast.error(error.message);
-      else { toast.success("News created!"); resetForm(); fetchNews(); }
+      const { data, error } = await supabase.from("news").insert(payload).select("id").single();
+      if (error) { toast.error(error.message); setSaving(false); return; }
+      savedNewsId = data?.id || null;
+      toast.success("News created!");
     }
+
+    // Auto-send newsletter if published and auto-newsletter is enabled
+    if (published && savedNewsId) {
+      try {
+        const { data: nlSettings } = await supabase.from("site_settings").select("value").eq("key", "newsletter_settings").single();
+        if (nlSettings?.value && (nlSettings.value as any).auto_on_publish) {
+          const articleUrl = `${window.location.origin}/news`;
+          const htmlContent = `<h1>${title}</h1>${excerpt ? `<p>${excerpt}</p>` : ""}<p>${content.substring(0, 300)}...</p><p><a href="${articleUrl}">Read more on Zerolord</a></p>`;
+          const { data: result } = await supabase.functions.invoke("send-newsletter", {
+            body: { subject: `📰 ${title}`, content: htmlContent, contentType: "html" },
+          });
+          if (result?.sent) {
+            await supabase.from("newsletter_logs").insert({
+              subject: `📰 ${title}`,
+              content: htmlContent,
+              content_type: "html",
+              recipient_count: result.sent,
+              trigger_type: "auto",
+              news_id: savedNewsId,
+            } as any);
+            toast.success(`Auto-newsletter sent to ${result.sent} subscribers!`);
+          }
+        }
+      } catch (err) {
+        console.error("Auto-newsletter error:", err);
+      }
+    }
+
+    resetForm();
+    fetchNews();
     setSaving(false);
   };
 
