@@ -86,7 +86,7 @@ export const PaymentMethodsManager = () => {
       crypto_enabled: cryptoEnabled,
       bank_enabled: bankEnabled,
     };
-    const { error } = await supabase.from("site_settings").upsert({ key: "payment_methods_config", value }, { onConflict: "key" });
+    const { error } = await supabase.from("site_settings").upsert({ key: "payment_methods_config", value } as any, { onConflict: "key" });
     if (error) toast.error("Failed to save");
     else toast.success("Payment methods saved!");
     setSaving(false);
