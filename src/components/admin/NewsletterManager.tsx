@@ -60,7 +60,7 @@ export const NewsletterManager = () => {
     const { error } = await supabase.from("site_settings").upsert({
       key: "newsletter_settings",
       value: { auto_on_publish: enabled },
-    }, { onConflict: "key" });
+    } as any, { onConflict: "key" });
     if (error) toast.error("Failed to save");
     else toast.success(enabled ? "Auto-newsletter enabled" : "Auto-newsletter disabled");
   };

@@ -308,7 +308,7 @@ export const PaymentMethodsManager = () => {
                 </Badge>
               ))}
               {cryptoEnabled && (
-                <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">CRYPTO (auto)</Badge>
+                <Badge className="bg-primary/20 text-primary border-primary/30">CRYPTO (auto)</Badge>
               )}
             </div>
           </Card>
