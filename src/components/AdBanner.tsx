@@ -132,8 +132,8 @@ export const AdBanner = ({ page, position }: AdBannerProps) => {
     window.open(ad.redirect_url || ad.ad_url, "_blank");
   };
 
-  // Hide all ads for subscribed users
-  if (loading || isSubscribed) return null;
+  // Hide all ads for paid subscribed users only
+  if (isSubscribed) return null;
   if (ads.length === 0) return null;
 
   return (
