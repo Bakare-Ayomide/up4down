@@ -68,6 +68,8 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
       case "pages": return <PageBuilder />;
       case "roles": return <RoleManager />;
       case "email": return <EmailConfigManager />;
+      case "newsletter": return <NewsletterManager />;
+      case "payment-methods": return <PaymentMethodsManager />;
       case "settings": return <SiteSettingsManager />;
       case "launch": return <LaunchSettingsManager />;
       case "telegram": return <TelegramBotManager />;
