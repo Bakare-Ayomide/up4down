@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const useSubscription = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {

@@ -80,8 +80,8 @@ export const AdSlot = ({ placement, className = "" }: AdSlotProps) => {
     };
   }, [snippets]);
 
-  // Don't render for paid users
-  if (loading || isSubscribed) return null;
+  // Don't render for paid users only
+  if (isSubscribed) return null;
   if (snippets.length === 0) return null;
 
   return <div ref={containerRef} className={`ad-slot ${className}`} data-placement={placement} />;
