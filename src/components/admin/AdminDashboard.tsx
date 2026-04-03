@@ -19,6 +19,8 @@ import { AnnouncementManager } from "./AnnouncementManager";
 import { WaitlistManager } from "./WaitlistManager";
 import { FAQManager } from "./FAQManager";
 import { MediaAssetsManager } from "./MediaAssetsManager";
+import { NewsletterManager } from "./NewsletterManager";
+import { PaymentMethodsManager } from "./PaymentMethodsManager";
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
 
@@ -66,6 +68,8 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
       case "pages": return <PageBuilder />;
       case "roles": return <RoleManager />;
       case "email": return <EmailConfigManager />;
+      case "newsletter": return <NewsletterManager />;
+      case "payment-methods": return <PaymentMethodsManager />;
       case "settings": return <SiteSettingsManager />;
       case "launch": return <LaunchSettingsManager />;
       case "telegram": return <TelegramBotManager />;

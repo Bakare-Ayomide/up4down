@@ -445,6 +445,50 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_logs: {
+        Row: {
+          content: string
+          content_type: string
+          created_at: string
+          id: string
+          news_id: string | null
+          recipient_count: number
+          sent_at: string
+          subject: string
+          trigger_type: string
+        }
+        Insert: {
+          content: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          news_id?: string | null
+          recipient_count?: number
+          sent_at?: string
+          subject: string
+          trigger_type?: string
+        }
+        Update: {
+          content?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          news_id?: string | null
+          recipient_count?: number
+          sent_at?: string
+          subject?: string
+          trigger_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_logs_news_id_fkey"
+            columns: ["news_id"]
+            isOneToOne: false
+            referencedRelation: "news"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
