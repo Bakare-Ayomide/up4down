@@ -1,4 +1,4 @@
-import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen, Megaphone, Rocket, Bell, Mail, HelpCircle, Image, Code2, MailOpen } from "lucide-react";
+import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen, Megaphone, Rocket, Bell, Mail, HelpCircle, Image, Code2, MailOpen, Wallet, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,7 @@ const menuItems = [
   { id: "calendar", label: "Calendar", icon: CalendarDays },
   { id: "categories", label: "Categories", icon: FolderOpen },
   { id: "news", label: "News", icon: Newspaper },
+  { id: "newsletter", label: "Newsletter", icon: Send },
   { id: "ads", label: "DIY Ads", icon: Megaphone },
   { id: "ad-snippets", label: "Ad Snippets", icon: Code2 },
   { id: "announcements", label: "Announcements", icon: Bell },
@@ -23,6 +24,7 @@ const menuItems = [
   { id: "media", label: "Media", icon: Image },
   { id: "pages", label: "Pages", icon: FileText },
   { id: "roles", label: "Roles", icon: ShieldCheck },
+  { id: "payment-methods", label: "Payment Methods", icon: Wallet },
   { id: "email", label: "Email", icon: MailOpen },
   { id: "settings", label: "Settings", icon: Sliders },
   { id: "launch", label: "Launch & SEO", icon: Rocket },

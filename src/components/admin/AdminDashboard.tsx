@@ -19,6 +19,8 @@ import { AnnouncementManager } from "./AnnouncementManager";
 import { WaitlistManager } from "./WaitlistManager";
 import { FAQManager } from "./FAQManager";
 import { MediaAssetsManager } from "./MediaAssetsManager";
+import { NewsletterManager } from "./NewsletterManager";
+import { PaymentMethodsManager } from "./PaymentMethodsManager";
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
 
