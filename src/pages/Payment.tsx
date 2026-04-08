@@ -19,6 +19,7 @@ interface CryptoWallet {
   currency: string;
   network: string;
   address: string;
+  price: string;
   enabled: boolean;
 }
 
