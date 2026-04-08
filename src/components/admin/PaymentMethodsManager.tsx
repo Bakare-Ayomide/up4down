@@ -30,6 +30,7 @@ interface BankAccount {
   account_number: string;
   routing_number: string;
   instructions: string;
+  price: string;
   enabled: boolean;
 }
 
