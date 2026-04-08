@@ -100,6 +100,7 @@ export const PaymentMethodsManager = () => {
       currency: "BTC",
       network: "Bitcoin",
       address: "",
+      price: "0.99",
       enabled: true,
     }]);
   };
