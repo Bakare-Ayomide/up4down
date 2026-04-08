@@ -287,9 +287,15 @@ export const PaymentMethodsManager = () => {
                         <Input value={account.routing_number} onChange={(e) => updateBankAccount(account.id, "routing_number", e.target.value)} className="mt-1" />
                       </div>
                     </div>
-                    <div>
-                      <Label className="text-xs">Instructions</Label>
-                      <Textarea value={account.instructions} onChange={(e) => updateBankAccount(account.id, "instructions", e.target.value)} rows={2} className="mt-1" />
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div>
+                        <Label className="text-xs">Instructions</Label>
+                        <Textarea value={account.instructions} onChange={(e) => updateBankAccount(account.id, "instructions", e.target.value)} rows={2} className="mt-1" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Premium Price ({account.currency})</Label>
+                        <Input type="number" step="0.01" min="0" value={account.price || ""} onChange={(e) => updateBankAccount(account.id, "price", e.target.value)} placeholder="e.g. 0.99" className="mt-1" />
+                      </div>
                     </div>
                   </Card>
                 ))}
