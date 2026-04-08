@@ -17,6 +17,7 @@ interface CryptoWallet {
   currency: string;
   network: string;
   address: string;
+  price: string;
   enabled: boolean;
 }
 
@@ -29,6 +30,7 @@ interface BankAccount {
   account_number: string;
   routing_number: string;
   instructions: string;
+  price: string;
   enabled: boolean;
 }
 
@@ -98,6 +100,7 @@ export const PaymentMethodsManager = () => {
       currency: "BTC",
       network: "Bitcoin",
       address: "",
+      price: "0.99",
       enabled: true,
     }]);
   };
@@ -120,6 +123,7 @@ export const PaymentMethodsManager = () => {
       account_number: "",
       routing_number: "",
       instructions: "",
+      price: "0.99",
       enabled: true,
     }]);
   };
@@ -204,9 +208,15 @@ export const PaymentMethodsManager = () => {
                           </Select>
                         </div>
                       </div>
-                      <div>
-                        <Label className="text-xs">Wallet Address</Label>
-                        <Input value={wallet.address} onChange={(e) => updateCryptoWallet(wallet.id, "address", e.target.value)} placeholder="Enter wallet address..." className="mt-1 font-mono text-xs" />
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-xs">Wallet Address</Label>
+                          <Input value={wallet.address} onChange={(e) => updateCryptoWallet(wallet.id, "address", e.target.value)} placeholder="Enter wallet address..." className="mt-1 font-mono text-xs" />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Premium Price</Label>
+                          <Input type="number" step="0.01" min="0" value={wallet.price || ""} onChange={(e) => updateCryptoWallet(wallet.id, "price", e.target.value)} placeholder="e.g. 0.99" className="mt-1" />
+                        </div>
                       </div>
                     </Card>
                   );
@@ -277,9 +287,15 @@ export const PaymentMethodsManager = () => {
                         <Input value={account.routing_number} onChange={(e) => updateBankAccount(account.id, "routing_number", e.target.value)} className="mt-1" />
                       </div>
                     </div>
-                    <div>
-                      <Label className="text-xs">Instructions</Label>
-                      <Textarea value={account.instructions} onChange={(e) => updateBankAccount(account.id, "instructions", e.target.value)} rows={2} className="mt-1" />
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div>
+                        <Label className="text-xs">Instructions</Label>
+                        <Textarea value={account.instructions} onChange={(e) => updateBankAccount(account.id, "instructions", e.target.value)} rows={2} className="mt-1" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Premium Price ({account.currency})</Label>
+                        <Input type="number" step="0.01" min="0" value={account.price || ""} onChange={(e) => updateBankAccount(account.id, "price", e.target.value)} placeholder="e.g. 0.99" className="mt-1" />
+                      </div>
                     </div>
                   </Card>
                 ))}

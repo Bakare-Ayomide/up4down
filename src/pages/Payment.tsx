@@ -19,6 +19,7 @@ interface CryptoWallet {
   currency: string;
   network: string;
   address: string;
+  price: string;
   enabled: boolean;
 }
 
@@ -31,6 +32,7 @@ interface BankAccount {
   account_number: string;
   routing_number: string;
   instructions: string;
+  price: string;
   enabled: boolean;
 }
 
@@ -264,7 +266,10 @@ const Payment = () => {
                     <div key={wallet.id} className="p-4 rounded-xl bg-muted/50 space-y-2">
                       <div className="flex items-center justify-between">
                         <Badge className="bg-primary/20 text-primary">{wallet.currency}</Badge>
-                        <span className="text-xs text-muted-foreground">{wallet.network}</span>
+                        <div className="flex items-center gap-2">
+                          {wallet.price && <span className="text-sm font-bold text-primary">{wallet.price} {wallet.currency}</span>}
+                          <span className="text-xs text-muted-foreground">{wallet.network}</span>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <code className="text-xs font-mono flex-1 break-all">{wallet.address}</code>
@@ -284,7 +289,10 @@ const Payment = () => {
                     <div key={bank.id} className="p-4 rounded-xl bg-muted/50 space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="font-semibold text-sm">{bank.label || bank.bank_name}</span>
-                        <Badge variant="outline" className="text-xs">{bank.currency}</Badge>
+                        <div className="flex items-center gap-2">
+                          {bank.price && <span className="text-sm font-bold text-primary">{bank.currency} {parseFloat(bank.price).toFixed(2)}</span>}
+                          <Badge variant="outline" className="text-xs">{bank.currency}</Badge>
+                        </div>
                       </div>
                       {bank.bank_name && (
                         <div className="flex justify-between items-center text-sm">
