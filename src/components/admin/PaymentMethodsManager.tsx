@@ -123,6 +123,7 @@ export const PaymentMethodsManager = () => {
       account_number: "",
       routing_number: "",
       instructions: "",
+      price: "0.99",
       enabled: true,
     }]);
   };
