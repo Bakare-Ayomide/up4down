@@ -126,6 +126,13 @@ const Download = () => {
     if (!item) return;
     try {
       await supabase.rpc("increment_download_count", { item_id: item.id });
+      // Log the download
+      await supabase.from("download_logs").insert({
+        item_id: item.id,
+        item_title: item.title,
+        user_id: session?.user?.id || null,
+        user_email: session?.user?.email || null,
+      });
       window.open(item.download_url, "_blank");
       toast.success("Download started!");
       fetchItem();

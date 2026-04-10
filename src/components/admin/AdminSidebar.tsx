@@ -1,4 +1,4 @@
-import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen, Megaphone, Rocket, Bell, Mail, HelpCircle, Image, Code2, MailOpen, Wallet, Send } from "lucide-react";
+import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen, Megaphone, Rocket, Bell, Mail, HelpCircle, Image, Code2, MailOpen, Wallet, Send, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,7 @@ interface AdminSidebarProps {
 
 const menuItems = [
   { id: "items", label: "Downloads", icon: LayoutGrid },
+  { id: "download-analytics", label: "Download Stats", icon: BarChart3 },
   { id: "users", label: "Users", icon: Users },
   { id: "subscriptions", label: "Subscriptions", icon: Crown },
   { id: "calendar", label: "Calendar", icon: CalendarDays },
