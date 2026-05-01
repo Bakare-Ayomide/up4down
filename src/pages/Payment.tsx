@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Crown, Check, ArrowLeft, CreditCard, Copy, Loader2, Bitcoin, Building2, Wallet } from "lucide-react";
+import { Crown, Check, ArrowLeft, CreditCard, Copy, Loader2, Bitcoin, Building2, Wallet, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { CURRENCIES, convertCurrency, formatCurrency } from "@/lib/currency";
@@ -56,6 +56,8 @@ const Payment = () => {
   const [submitted, setSubmitted] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"bank" | "crypto">("bank");
   const [paymentConfig, setPaymentConfig] = useState<PaymentConfig | null>(null);
+  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string>("");
 
   const baseAmount = settings.subscription_price.amount;
   const baseCurrency = settings.subscription_price.currency;
@@ -91,9 +93,20 @@ const Payment = () => {
     }
   };
 
+  const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { toast.error("Please upload an image file"); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error("Image must be under 10MB"); return; }
+    setScreenshot(file);
+    setScreenshotPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) { toast.error("Please enter your email"); return; }
+    if (!paymentRef.trim()) { toast.error("Please enter your payment reference / transaction ID"); return; }
+    if (!screenshot) { toast.error("Please upload your payment screenshot"); return; }
 
     setSubmitting(true);
     try {
@@ -114,20 +127,30 @@ const Payment = () => {
         userId = authData?.user?.id;
       }
 
+      // Upload screenshot
+      const ext = screenshot.name.split(".").pop() || "png";
+      const filePath = `${userId || "guest"}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("payment-screenshots").upload(filePath, screenshot);
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
+      const screenshotUrl = pub.publicUrl;
+
       if (userId) {
         await supabase.from("subscriptions").insert({
           user_id: userId,
+          email,
           status: "pending",
           currency: selectedCurrency === "CRYPTO" ? paymentMethod.toUpperCase() : selectedCurrency,
           amount_paid: selectedCurrency === "CRYPTO" ? baseAmount : convertedAmount,
-          payment_reference: paymentRef || `Payment from ${email}`,
+          payment_reference: paymentRef,
+          screenshot_url: screenshotUrl,
         });
       }
 
       setSubmitted(true);
-      toast.success("Payment request submitted! We'll activate your subscription after verification.");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.success("Payment request submitted! We'll review and notify you shortly.");
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -353,8 +376,25 @@ const Payment = () => {
                   <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="ref">Payment Reference / Transaction ID</Label>
-                  <Input id="ref" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} placeholder="Enter your payment reference" className="mt-1" />
+                  <Label htmlFor="ref">Payment Reference / Transaction ID *</Label>
+                  <Input id="ref" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} placeholder="Enter your payment reference" required className="mt-1" />
+                </div>
+                <div>
+                  <Label htmlFor="screenshot">Payment Screenshot * <span className="text-xs text-muted-foreground">(proof of transaction, max 10MB)</span></Label>
+                  {screenshotPreview ? (
+                    <div className="mt-2 relative inline-block">
+                      <img src={screenshotPreview} alt="Payment proof" className="max-h-48 rounded-lg border border-border" />
+                      <button type="button" onClick={() => { setScreenshot(null); setScreenshotPreview(""); }} className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label htmlFor="screenshot" className="mt-1 flex items-center justify-center gap-2 h-24 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary hover:bg-muted/30 transition-colors">
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Click to upload screenshot</span>
+                    </label>
+                  )}
+                  <input id="screenshot" type="file" accept="image/*" onChange={handleScreenshotChange} className="hidden" />
                 </div>
                 <Button type="submit" disabled={submitting} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 text-lg font-semibold shadow-[var(--shadow-glow)]">
                   {submitting ? (

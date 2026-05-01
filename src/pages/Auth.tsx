@@ -37,10 +37,30 @@ const Auth = () => {
     if (!email || !password) { toast.error("Fill in all fields"); return; }
     if (password.length < 6) { toast.error("Password must be at least 6 characters"); return; }
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) toast.error(error.message);
-    else toast.success("Account created! You're now logged in.");
-    setLoading(false);
+    try {
+      // Validate email exists & is reachable (no confirmation email needed)
+      const { data: validation, error: vErr } = await supabase.functions.invoke("validate-email", {
+        body: { email },
+      });
+      if (vErr) {
+        toast.error("Could not validate email. Please try again.");
+        setLoading(false);
+        return;
+      }
+      if (!validation?.valid) {
+        toast.error(validation?.reason || "This email address could not be verified");
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) toast.error(error.message);
+      else toast.success("Account created! You're now logged in.");
+    } catch (err: any) {
+      toast.error(err?.message || "Sign up failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
