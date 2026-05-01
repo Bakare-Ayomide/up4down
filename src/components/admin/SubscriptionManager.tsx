@@ -92,18 +92,20 @@ export const SubscriptionManager = () => {
     if (!sub.email) { toast.warning("No email on file — skipping notification"); return; }
     // Load SMTP config
     const { data: smtpRow } = await supabase.from("site_settings").select("value").eq("key", "smtp_config").maybeSingle();
-    const smtp_config = smtpRow?.value;
+    const smtp_config = smtpRow?.value as any;
     if (!smtp_config?.host) { toast.warning("SMTP not configured — email skipped. Configure it in Email settings."); return; }
 
     const subject = type === "approved" ? templates.approved_subject : templates.rejected_subject;
     let body = type === "approved" ? templates.approved_body : templates.rejected_body;
-    body = body
-      .replaceAll("{{reference}}", sub.payment_reference || "—")
-      .replaceAll("{{amount}}", String(sub.amount_paid))
-      .replaceAll("{{currency}}", sub.currency)
-      .replaceAll("{{email}}", sub.email)
-      .replaceAll("{{expires_at}}", extra?.expires_at ? new Date(extra.expires_at).toLocaleDateString() : "—")
-      .replaceAll("{{reason}}", extra?.reason || "—");
+    const vars: Record<string, string> = {
+      reference: sub.payment_reference || "—",
+      amount: String(sub.amount_paid),
+      currency: sub.currency,
+      email: sub.email,
+      expires_at: extra?.expires_at ? new Date(extra.expires_at).toLocaleDateString() : "—",
+      reason: extra?.reason || "—",
+    };
+    body = body.replace(/\{\{(\w+)\}\}/g, (_m, k) => vars[k] ?? `{{${k}}}`);
 
     try {
       const { error } = await supabase.functions.invoke("send-smtp-email", {
