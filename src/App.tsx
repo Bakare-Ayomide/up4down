@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { SEOHead } from "@/components/SEOHead";
 import { AnalyticsInjector } from "@/components/AnalyticsInjector";
+import { SubscriptionNotificationListener } from "@/components/SubscriptionNotificationListener";
 import Index from "./pages/Index";
 import Browse from "./pages/Browse";
 import Download from "./pages/Download";
@@ -28,6 +29,7 @@ const App = () => (
       <TooltipProvider>
         <SEOHead />
         <AnalyticsInjector />
+        <SubscriptionNotificationListener />
         <Toaster />
         <Sonner />
         <BrowserRouter>
