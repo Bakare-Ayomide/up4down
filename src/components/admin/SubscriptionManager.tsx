@@ -184,7 +184,7 @@ export const SubscriptionManager = () => {
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Manage Subscriptions</h2>
-          <p className="text-muted-foreground">Review payment submissions, approve, or reject with email notifications</p>
+          <p className="text-muted-foreground">Review payment submissions, approve, or reject with in-app notifications</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowTemplates(true)} className="gap-2">
@@ -308,12 +308,12 @@ export const SubscriptionManager = () => {
 
               {rejectingId === viewing.id ? (
                 <div className="space-y-2 border-t pt-4">
-                  <Label>Rejection reason (will be emailed to the user)</Label>
+                  <Label>Rejection reason (shown to the user in-app)</Label>
                   <Textarea value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} placeholder="e.g. Could not locate this transaction in our records" rows={3} />
                   <div className="flex gap-2 justify-end">
                     <Button variant="outline" size="sm" onClick={() => { setRejectingId(null); setRejectReason(""); }}>Cancel</Button>
                     <Button size="sm" variant="destructive" disabled={!rejectReason.trim() || actionBusy} onClick={() => reject(viewing, rejectReason.trim())}>
-                      Confirm Rejection & Email User
+                      Confirm Rejection & Notify User
                     </Button>
                   </div>
                 </div>
@@ -332,11 +332,11 @@ export const SubscriptionManager = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Email templates dialog */}
+      {/* Notification templates dialog */}
       <Dialog open={showTemplates} onOpenChange={setShowTemplates}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Notification Email Templates</DialogTitle>
+            <DialogTitle>In-App Notification Templates</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-xs text-muted-foreground">
