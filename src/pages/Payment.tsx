@@ -58,12 +58,24 @@ const Payment = () => {
   const [paymentConfig, setPaymentConfig] = useState<PaymentConfig | null>(null);
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string>("");
+  const [session, setSession] = useState<any>(null);
 
   const baseAmount = settings.subscription_price.amount;
   const baseCurrency = settings.subscription_price.currency;
 
   useEffect(() => {
     fetchPaymentConfig();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user?.email) setEmail(session.user.email);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session?.user?.email) setEmail(session.user.email);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -104,48 +116,38 @@ const Payment = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) { toast.error("Please enter your email"); return; }
+    if (!session?.user) { toast.error("Please sign in before submitting payment proof"); navigate("/auth"); return; }
+    const cleanEmail = email.trim() || session.user.email || "";
+    if (!cleanEmail) { toast.error("Please enter your email"); return; }
     if (!paymentRef.trim()) { toast.error("Please enter your payment reference / transaction ID"); return; }
     if (!screenshot) { toast.error("Please upload your payment screenshot"); return; }
 
     setSubmitting(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      let userId = session?.user?.id;
-
-      if (!userId) {
-        const tempPassword = crypto.randomUUID().slice(0, 16) + "Aa1!";
-        const { data: authData, error: authError } = await supabase.auth.signUp({ email, password: tempPassword });
-        if (authError) {
-          if (authError.message.includes("already registered")) {
-            toast.error("This email is already registered. Please log in first at /auth");
-            setSubmitting(false);
-            return;
-          }
-          throw authError;
-        }
-        userId = authData?.user?.id;
-      }
+      const userId = session.user.id;
 
       // Upload screenshot
       const ext = screenshot.name.split(".").pop() || "png";
-      const filePath = `${userId || "guest"}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("payment-screenshots").upload(filePath, screenshot);
+      const safeExt = ext.replace(/[^a-zA-Z0-9]/g, "").toLowerCase() || "png";
+      const filePath = `${userId}/${Date.now()}-${crypto.randomUUID()}.${safeExt}`;
+      const { error: upErr } = await supabase.storage.from("payment-screenshots").upload(filePath, screenshot, {
+        contentType: screenshot.type,
+        upsert: false,
+      });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
       const screenshotUrl = pub.publicUrl;
 
-      if (userId) {
-        await supabase.from("subscriptions").insert({
-          user_id: userId,
-          email,
-          status: "pending",
-          currency: selectedCurrency === "CRYPTO" ? paymentMethod.toUpperCase() : selectedCurrency,
-          amount_paid: selectedCurrency === "CRYPTO" ? baseAmount : convertedAmount,
-          payment_reference: paymentRef,
-          screenshot_url: screenshotUrl,
-        });
-      }
+      const { error: insertErr } = await supabase.from("subscriptions").insert({
+        user_id: userId,
+        email: cleanEmail,
+        status: "pending",
+        currency: selectedCurrency === "CRYPTO" ? paymentMethod.toUpperCase() : selectedCurrency,
+        amount_paid: selectedCurrency === "CRYPTO" ? baseAmount : convertedAmount,
+        payment_reference: paymentRef.trim(),
+        screenshot_url: screenshotUrl,
+      });
+      if (insertErr) throw insertErr;
 
       setSubmitted(true);
       toast.success("Payment request submitted! We'll review and notify you shortly.");
@@ -371,6 +373,11 @@ const Payment = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {!session?.user && (
+                  <div className="rounded-lg border border-primary/30 bg-primary/10 p-3 text-sm text-primary">
+                    Sign in first so your payment proof, review status, and in-app notification can be linked to your account.
+                  </div>
+                )}
                 <div>
                   <Label htmlFor="email">Your Email *</Label>
                   <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-1" />
@@ -384,6 +391,7 @@ const Payment = () => {
                   {screenshotPreview ? (
                     <div className="mt-2 relative inline-block">
                       <img src={screenshotPreview} alt="Payment proof" className="max-h-48 rounded-lg border border-border" />
+                      {screenshot && <p className="mt-2 max-w-xs truncate text-xs text-muted-foreground">Selected: {screenshot.name}</p>}
                       <button type="button" onClick={() => { setScreenshot(null); setScreenshotPreview(""); }} className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1">
                         <X className="h-3 w-3" />
                       </button>
