@@ -73,8 +73,12 @@ export const SubscriptionManager = () => {
   };
 
   const fetchTemplates = async () => {
-    const { data } = await supabase.from("site_settings").select("value").eq("key", "subscription_notification_templates").maybeSingle();
-    if (data?.value) setTemplates({ ...DEFAULT_TEMPLATES, ...(data.value as any) });
+    const { data } = await supabase
+      .from("site_settings")
+      .select("key,value")
+      .in("key", ["subscription_notification_templates", "subscription_email_templates"]);
+    const saved = data?.find((row) => row.key === "subscription_notification_templates") || data?.find((row) => row.key === "subscription_email_templates");
+    if (saved?.value) setTemplates({ ...DEFAULT_TEMPLATES, ...(saved.value as any) });
   };
 
   const saveTemplates = async () => {
