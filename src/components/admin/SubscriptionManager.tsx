@@ -188,7 +188,7 @@ export const SubscriptionManager = () => {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowTemplates(true)} className="gap-2">
-            <Mail className="h-4 w-4" /> Email Templates
+            <Bell className="h-4 w-4" /> Notification Templates
           </Button>
           <Button variant="outline" size="sm" onClick={fetchSubscriptions} className="gap-2">
             <RefreshCw className="h-4 w-4" /> Refresh
