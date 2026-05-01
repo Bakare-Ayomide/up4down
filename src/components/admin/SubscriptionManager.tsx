@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Check, X, Clock, Trash2, Search, RefreshCw, Eye, Mail, Save } from "lucide-react";
+import { Check, X, Clock, Trash2, Search, RefreshCw, Eye, Bell, Save } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -38,12 +38,12 @@ interface Templates {
 }
 
 const DEFAULT_TEMPLATES: Templates = {
-  approved_subject: "🎉 Your Premium Subscription is Active!",
+  approved_subject: "🎉 Premium activated",
   approved_body:
-    "Hi there,\n\nGreat news — your payment has been verified and your Premium subscription is now ACTIVE!\n\nReference: {{reference}}\nAmount: {{amount}} {{currency}}\nExpires: {{expires_at}}\n\nEnjoy unlimited downloads with zero ads.\n\nThanks,\nThe Team",
-  rejected_subject: "About your recent payment submission",
+    "Great news — your payment has been verified and your Premium subscription is now active.\n\nReference: {{reference}}\nAmount: {{amount}} {{currency}}\nExpires: {{expires_at}}\n\nEnjoy unlimited downloads with zero ads.",
+  rejected_subject: "Payment submission rejected",
   rejected_body:
-    "Hi there,\n\nUnfortunately we couldn't verify your recent payment submission.\n\nReference: {{reference}}\nReason: {{reason}}\n\nPlease re-submit at our payment page or reply to this email if you believe this is an error.\n\nThanks,\nThe Team",
+    "We couldn't verify your recent payment submission.\n\nReference: {{reference}}\nReason: {{reason}}\n\nPlease submit a new payment proof from the payment page.",
 };
 
 export const SubscriptionManager = () => {
@@ -73,14 +73,14 @@ export const SubscriptionManager = () => {
   };
 
   const fetchTemplates = async () => {
-    const { data } = await supabase.from("site_settings").select("value").eq("key", "subscription_email_templates").maybeSingle();
+    const { data } = await supabase.from("site_settings").select("value").eq("key", "subscription_notification_templates").maybeSingle();
     if (data?.value) setTemplates({ ...DEFAULT_TEMPLATES, ...(data.value as any) });
   };
 
   const saveTemplates = async () => {
     setSavingTemplates(true);
     const { error } = await supabase.from("site_settings").upsert(
-      { key: "subscription_email_templates", value: templates as any },
+      { key: "subscription_notification_templates", value: templates as any },
       { onConflict: "key" }
     );
     setSavingTemplates(false);
@@ -88,14 +88,8 @@ export const SubscriptionManager = () => {
     toast.success("Templates saved");
   };
 
-  const sendNotificationEmail = async (sub: Subscription, type: "approved" | "rejected", extra?: { reason?: string; expires_at?: string }) => {
-    if (!sub.email) { toast.warning("No email on file — skipping notification"); return; }
-    // Load SMTP config
-    const { data: smtpRow } = await supabase.from("site_settings").select("value").eq("key", "smtp_config").maybeSingle();
-    const smtp_config = smtpRow?.value as any;
-    if (!smtp_config?.host) { toast.warning("SMTP not configured — email skipped. Configure it in Email settings."); return; }
-
-    const subject = type === "approved" ? templates.approved_subject : templates.rejected_subject;
+  const renderTemplate = (sub: Subscription, type: "approved" | "rejected", extra?: { reason?: string; expires_at?: string }) => {
+    const title = type === "approved" ? templates.approved_subject : templates.rejected_subject;
     let body = type === "approved" ? templates.approved_body : templates.rejected_body;
     const vars: Record<string, string> = {
       reference: sub.payment_reference || "—",
@@ -106,16 +100,19 @@ export const SubscriptionManager = () => {
       reason: extra?.reason || "—",
     };
     body = body.replace(/\{\{(\w+)\}\}/g, (_m, k) => vars[k] ?? `{{${k}}}`);
+    return { title, body };
+  };
 
-    try {
-      const { error } = await supabase.functions.invoke("send-smtp-email", {
-        body: { to: sub.email, subject, body, smtp_config },
-      });
-      if (error) throw error;
-      toast.success(`Notification email sent to ${sub.email}`);
-    } catch (e: any) {
-      toast.error(`Email failed: ${e.message || "unknown error"}`);
-    }
+  const createInAppNotification = async (sub: Subscription, type: "approved" | "rejected", extra?: { reason?: string; expires_at?: string }) => {
+    const { title, body } = renderTemplate(sub, type, extra);
+    const { error } = await supabase.from("subscription_notifications" as any).insert({
+      user_id: sub.user_id,
+      subscription_id: sub.id,
+      type,
+      title,
+      message: body,
+    });
+    if (error) throw error;
   };
 
   const approve = async (sub: Subscription) => {
@@ -128,8 +125,8 @@ export const SubscriptionManager = () => {
       rejection_reason: null,
     }).eq("id", sub.id);
     if (error) { toast.error("Failed to approve"); setActionBusy(false); return; }
-    toast.success("Subscription activated");
-    await sendNotificationEmail({ ...sub, status: "active" }, "approved", { expires_at });
+    await createInAppNotification({ ...sub, status: "active" }, "approved", { expires_at });
+    toast.success("Subscription activated and in-app notification sent");
     setActionBusy(false);
     setViewing(null);
     fetchSubscriptions();
@@ -142,8 +139,8 @@ export const SubscriptionManager = () => {
       rejection_reason: reason,
     }).eq("id", sub.id);
     if (error) { toast.error("Failed to reject"); setActionBusy(false); return; }
-    toast.success("Submission rejected");
-    await sendNotificationEmail(sub, "rejected", { reason });
+    await createInAppNotification(sub, "rejected", { reason });
+    toast.success("Submission rejected and in-app notification sent");
     setActionBusy(false);
     setRejectingId(null);
     setRejectReason("");
