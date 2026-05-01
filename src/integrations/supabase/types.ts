@@ -612,9 +612,12 @@ export type Database = {
           amount_paid: number
           created_at: string
           currency: string
+          email: string | null
           expires_at: string | null
           id: string
           payment_reference: string | null
+          rejection_reason: string | null
+          screenshot_url: string | null
           started_at: string | null
           status: string
           updated_at: string
@@ -624,9 +627,12 @@ export type Database = {
           amount_paid?: number
           created_at?: string
           currency?: string
+          email?: string | null
           expires_at?: string | null
           id?: string
           payment_reference?: string | null
+          rejection_reason?: string | null
+          screenshot_url?: string | null
           started_at?: string | null
           status?: string
           updated_at?: string
@@ -636,9 +642,12 @@ export type Database = {
           amount_paid?: number
           created_at?: string
           currency?: string
+          email?: string | null
           expires_at?: string | null
           id?: string
           payment_reference?: string | null
+          rejection_reason?: string | null
+          screenshot_url?: string | null
           started_at?: string | null
           status?: string
           updated_at?: string
