@@ -404,7 +404,7 @@ const Payment = () => {
                   )}
                   <input id="screenshot" type="file" accept="image/*" onChange={handleScreenshotChange} className="hidden" />
                 </div>
-                <Button type="submit" disabled={submitting} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 text-lg font-semibold shadow-[var(--shadow-glow)]">
+                <Button type="submit" disabled={submitting || !session?.user || !paymentRef.trim() || !screenshot} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 text-lg font-semibold shadow-[var(--shadow-glow)]">
                   {submitting ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
