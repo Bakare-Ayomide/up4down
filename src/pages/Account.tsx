@@ -72,7 +72,6 @@ const Account = () => {
         (payload) => {
           const next = payload.new as SubscriptionNotification;
           setNotifications((current) => [next, ...current].slice(0, 10));
-          toast(next.title, { description: next.message.slice(0, 120) });
           fetchSubscription(session.user.id);
           refreshSubscriptionStatus();
         },
