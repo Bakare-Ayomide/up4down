@@ -8,6 +8,10 @@ export const useSubscription = () => {
 
   useEffect(() => {
     checkSubscription();
+
+    const handleSubscriptionChanged = () => checkSubscription();
+    window.addEventListener("subscription-status-changed", handleSubscriptionChanged);
+    return () => window.removeEventListener("subscription-status-changed", handleSubscriptionChanged);
   }, []);
 
   const checkSubscription = async () => {
