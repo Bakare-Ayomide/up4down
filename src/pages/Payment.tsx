@@ -376,8 +376,25 @@ const Payment = () => {
                   <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="ref">Payment Reference / Transaction ID</Label>
-                  <Input id="ref" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} placeholder="Enter your payment reference" className="mt-1" />
+                  <Label htmlFor="ref">Payment Reference / Transaction ID *</Label>
+                  <Input id="ref" value={paymentRef} onChange={(e) => setPaymentRef(e.target.value)} placeholder="Enter your payment reference" required className="mt-1" />
+                </div>
+                <div>
+                  <Label htmlFor="screenshot">Payment Screenshot * <span className="text-xs text-muted-foreground">(proof of transaction, max 10MB)</span></Label>
+                  {screenshotPreview ? (
+                    <div className="mt-2 relative inline-block">
+                      <img src={screenshotPreview} alt="Payment proof" className="max-h-48 rounded-lg border border-border" />
+                      <button type="button" onClick={() => { setScreenshot(null); setScreenshotPreview(""); }} className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label htmlFor="screenshot" className="mt-1 flex items-center justify-center gap-2 h-24 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary hover:bg-muted/30 transition-colors">
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Click to upload screenshot</span>
+                    </label>
+                  )}
+                  <input id="screenshot" type="file" accept="image/*" onChange={handleScreenshotChange} className="hidden" />
                 </div>
                 <Button type="submit" disabled={submitting} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 text-lg font-semibold shadow-[var(--shadow-glow)]">
                   {submitting ? (
