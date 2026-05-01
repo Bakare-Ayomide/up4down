@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Crown, Check, ArrowLeft, CreditCard, Copy, Loader2, Bitcoin, Building2, Wallet } from "lucide-react";
+import { Crown, Check, ArrowLeft, CreditCard, Copy, Loader2, Bitcoin, Building2, Wallet, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { CURRENCIES, convertCurrency, formatCurrency } from "@/lib/currency";
@@ -56,6 +56,8 @@ const Payment = () => {
   const [submitted, setSubmitted] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"bank" | "crypto">("bank");
   const [paymentConfig, setPaymentConfig] = useState<PaymentConfig | null>(null);
+  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string>("");
 
   const baseAmount = settings.subscription_price.amount;
   const baseCurrency = settings.subscription_price.currency;
@@ -91,9 +93,20 @@ const Payment = () => {
     }
   };
 
+  const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { toast.error("Please upload an image file"); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error("Image must be under 10MB"); return; }
+    setScreenshot(file);
+    setScreenshotPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) { toast.error("Please enter your email"); return; }
+    if (!paymentRef.trim()) { toast.error("Please enter your payment reference / transaction ID"); return; }
+    if (!screenshot) { toast.error("Please upload your payment screenshot"); return; }
 
     setSubmitting(true);
     try {
@@ -114,20 +127,30 @@ const Payment = () => {
         userId = authData?.user?.id;
       }
 
+      // Upload screenshot
+      const ext = screenshot.name.split(".").pop() || "png";
+      const filePath = `${userId || "guest"}/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("payment-screenshots").upload(filePath, screenshot);
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("payment-screenshots").getPublicUrl(filePath);
+      const screenshotUrl = pub.publicUrl;
+
       if (userId) {
         await supabase.from("subscriptions").insert({
           user_id: userId,
+          email,
           status: "pending",
           currency: selectedCurrency === "CRYPTO" ? paymentMethod.toUpperCase() : selectedCurrency,
           amount_paid: selectedCurrency === "CRYPTO" ? baseAmount : convertedAmount,
-          payment_reference: paymentRef || `Payment from ${email}`,
+          payment_reference: paymentRef,
+          screenshot_url: screenshotUrl,
         });
       }
 
       setSubmitted(true);
-      toast.success("Payment request submitted! We'll activate your subscription after verification.");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.success("Payment request submitted! We'll review and notify you shortly.");
+    } catch (err: any) {
+      toast.error(err?.message || "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
