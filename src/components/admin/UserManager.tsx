@@ -32,12 +32,24 @@ export const UserManager = () => {
 
   const fetchUsers = async () => {
     setLoading(true);
-    
-    // Fetch profiles
-    const { data: profiles } = await supabase
-      .from("profiles")
-      .select("*")
-      .order("created_at", { ascending: false });
+
+    // Fetch ALL profiles using pagination (Supabase default cap is 1000)
+    const pageSize = 1000;
+    let from = 0;
+    const profiles: any[] = [];
+    // Loop until we get less than pageSize back
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .range(from, from + pageSize - 1);
+      if (error || !data) break;
+      profiles.push(...data);
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
 
     // Fetch active subscriptions
     const { data: subs } = await supabase
@@ -109,11 +121,18 @@ export const UserManager = () => {
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Manage Users</h2>
-          <p className="text-muted-foreground">{users.length} total users</p>
+          <p className="text-muted-foreground">{users.length.toLocaleString()} total users</p>
         </div>
         <Button variant="outline" size="sm" onClick={fetchUsers} className="gap-2">
           <RefreshCw className="h-4 w-4" /> Refresh
         </Button>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Card className="p-3"><div className="text-xs text-muted-foreground">Total</div><div className="text-xl font-bold">{users.length.toLocaleString()}</div></Card>
+        <Card className="p-3"><div className="text-xs text-muted-foreground">Active</div><div className="text-xl font-bold text-green-500">{users.filter(u => u.subscription_status === "active").length.toLocaleString()}</div></Card>
+        <Card className="p-3"><div className="text-xs text-muted-foreground">Pending</div><div className="text-xl font-bold text-yellow-500">{users.filter(u => u.subscription_status === "pending").length.toLocaleString()}</div></Card>
+        <Card className="p-3"><div className="text-xs text-muted-foreground">Free</div><div className="text-xl font-bold">{users.filter(u => (u.subscription_status || "free") === "free").length.toLocaleString()}</div></Card>
       </div>
 
       <div className="relative">
@@ -123,12 +142,12 @@ export const UserManager = () => {
 
       {loading ? <p>Loading...</p> : (
         <div className="grid gap-3">
-          {filtered.map((user) => (
+          {filtered.map((user, idx) => (
             <Card key={user.id} className="p-4">
               <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center shrink-0">
-                    {user.is_admin ? <ShieldCheck className="h-5 w-5 text-primary" /> : <User className="h-5 w-5 text-muted-foreground" />}
+                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center shrink-0 text-xs font-bold text-muted-foreground">
+                    #{idx + 1}
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
