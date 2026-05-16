@@ -32,12 +32,24 @@ export const UserManager = () => {
 
   const fetchUsers = async () => {
     setLoading(true);
-    
-    // Fetch profiles
-    const { data: profiles } = await supabase
-      .from("profiles")
-      .select("*")
-      .order("created_at", { ascending: false });
+
+    // Fetch ALL profiles using pagination (Supabase default cap is 1000)
+    const pageSize = 1000;
+    let from = 0;
+    const profiles: any[] = [];
+    // Loop until we get less than pageSize back
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .range(from, from + pageSize - 1);
+      if (error || !data) break;
+      profiles.push(...data);
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
 
     // Fetch active subscriptions
     const { data: subs } = await supabase
