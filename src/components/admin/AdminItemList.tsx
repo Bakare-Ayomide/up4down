@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, Eye, Star } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Pencil, Trash2, Eye, Star, Package } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -20,10 +21,13 @@ interface AdminItemListProps {
   onEdit: (item: any) => void;
 }
 
+type ConfirmMode = null | { type: "single"; id: string } | { type: "bulk"; ids: string[] } | { type: "all" };
+
 export const AdminItemList = ({ onEdit }: AdminItemListProps) => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [confirm, setConfirm] = useState<ConfirmMode>(null);
 
   useEffect(() => {
     fetchItems();
@@ -42,36 +46,90 @@ export const AdminItemList = ({ onEdit }: AdminItemListProps) => {
       .order("created_at", { ascending: false });
 
     if (data) setItems(data);
+    setSelected(new Set());
     setLoading(false);
   };
 
+  const toggleOne = (id: string) => {
+    const next = new Set(selected);
+    next.has(id) ? next.delete(id) : next.add(id);
+    setSelected(next);
+  };
+
+  const toggleAll = () => {
+    if (selected.size === items.length) setSelected(new Set());
+    else setSelected(new Set(items.map((i) => i.id)));
+  };
+
   const handleDelete = async () => {
-    if (!deleteId) return;
-
+    if (!confirm) return;
     try {
-      const { error } = await supabase.from("download_items").delete().eq("id", deleteId);
+      let ids: string[] = [];
+      if (confirm.type === "single") ids = [confirm.id];
+      else if (confirm.type === "bulk") ids = confirm.ids;
+      else if (confirm.type === "all") ids = items.map((i) => i.id);
 
+      if (ids.length === 0) return;
+
+      const { error } = await supabase.from("download_items").delete().in("id", ids);
       if (error) throw error;
 
-      toast.success("Item deleted successfully");
+      toast.success(`Deleted ${ids.length} item${ids.length > 1 ? "s" : ""}`);
       fetchItems();
-    } catch (error) {
-      toast.error("Failed to delete item");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete");
     } finally {
-      setDeleteId(null);
+      setConfirm(null);
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  if (loading) return <p>Loading...</p>;
+
+  const allChecked = items.length > 0 && selected.size === items.length;
 
   return (
     <>
+      {/* Stats + Bulk toolbar */}
+      <div className="mb-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2 text-sm">
+          <Package className="h-4 w-4 text-primary" />
+          <span className="font-semibold">Total Items: {items.length}</span>
+          {selected.size > 0 && (
+            <Badge variant="secondary" className="ml-2">{selected.size} selected</Badge>
+          )}
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          {items.length > 0 && (
+            <Button variant="outline" size="sm" onClick={toggleAll}>
+              {allChecked ? "Unselect All" : "Select All"}
+            </Button>
+          )}
+          {selected.size > 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setConfirm({ type: "bulk", ids: Array.from(selected) })}
+            >
+              <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete Selected ({selected.size})
+            </Button>
+          )}
+          {items.length > 0 && (
+            <Button variant="destructive" size="sm" onClick={() => setConfirm({ type: "all" })}>
+              <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete All
+            </Button>
+          )}
+        </div>
+      </div>
+
       <div className="grid gap-4">
         {items.map((item) => (
           <Card key={item.id} className="p-3">
             <div className="flex items-start gap-3">
+              <Checkbox
+                checked={selected.has(item.id)}
+                onCheckedChange={() => toggleOne(item.id)}
+                className="mt-1"
+              />
               {item.thumbnail_url && (
                 <img
                   src={item.thumbnail_url}
@@ -98,7 +156,7 @@ export const AdminItemList = ({ onEdit }: AdminItemListProps) => {
                     <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => onEdit(item)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setDeleteId(item.id)}>
+                    <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => setConfirm({ type: "single", id: item.id })}>
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
@@ -126,17 +184,21 @@ export const AdminItemList = ({ onEdit }: AdminItemListProps) => {
         )}
       </div>
 
-      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+      <AlertDialog open={!!confirm} onOpenChange={(o) => !o && setConfirm(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the download item.
+              {confirm?.type === "all" && `This will permanently delete ALL ${items.length} download items. This action cannot be undone.`}
+              {confirm?.type === "bulk" && `This will permanently delete ${confirm.ids.length} selected items. This action cannot be undone.`}
+              {confirm?.type === "single" && `This will permanently delete the download item. This action cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
