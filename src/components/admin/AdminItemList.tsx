@@ -160,11 +160,11 @@ export const AdminItemList = ({ onEdit }: AdminItemListProps) => {
               </div>
             </div>
 
-            <div className="flex gap-2 mt-3 pt-3 border-t border-border">
-              <Button variant="outline" size="sm" className="flex-1 h-8" onClick={() => onEdit(item)}>
+            <div className="flex w-full gap-2 mt-3 pt-3 border-t border-border">
+              <Button variant="outline" size="sm" className="flex-1 min-w-0 h-8" onClick={() => onEdit(item)}>
                 <Pencil className="h-3.5 w-3.5 mr-1" /> Edit
               </Button>
-              <Button variant="outline" size="sm" className="flex-1 h-8 text-destructive hover:text-destructive" onClick={() => setConfirm({ type: "single", id: item.id })}>
+              <Button variant="outline" size="sm" className="flex-1 min-w-0 h-8 text-destructive hover:text-destructive" onClick={() => setConfirm({ type: "single", id: item.id })}>
                 <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
               </Button>
             </div>
