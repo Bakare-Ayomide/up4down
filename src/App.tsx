@@ -20,6 +20,8 @@ import Support from "./pages/Support";
 import Waitlist from "./pages/Waitlist";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import Channels from "./pages/Channels";
+import ChannelDetail from "./pages/ChannelDetail";
 
 const queryClient = new QueryClient();
 
