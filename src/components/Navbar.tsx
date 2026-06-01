@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogIn } from "lucide-react";
+import { Menu, X, User, LogIn, MessageSquare } from "lucide-react";
 import { SearchBar } from "@/components/SearchBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useState, useEffect } from "react";
@@ -48,6 +48,15 @@ export const Navbar = () => {
                 size="sm"
                 className={`font-medium rounded-full px-5 ${location.pathname === "/browse" ? "shadow-[var(--shadow-glow)]" : ""}`}>
                 Browse
+              </Button>
+            </Link>
+            <Link to="/channels">
+              <Button
+                variant={location.pathname.startsWith("/channels") ? "default" : "ghost"}
+                size="sm"
+                className={`font-medium rounded-full px-5 gap-1 ${location.pathname.startsWith("/channels") ? "shadow-[var(--shadow-glow)]" : "text-destructive hover:text-destructive"}`}>
+                <MessageSquare className="h-4 w-4" />
+                Channels
               </Button>
             </Link>
             <Link to="/news">
@@ -111,6 +120,14 @@ export const Navbar = () => {
                 variant={location.pathname === "/browse" ? "default" : "outline"}
                 className="w-full rounded-xl">
                   Browse
+                </Button>
+              </Link>
+              <Link to="/channels" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                variant={location.pathname.startsWith("/channels") ? "default" : "outline"}
+                className="w-full rounded-xl gap-1">
+                  <MessageSquare className="h-4 w-4" />
+                  Chats
                 </Button>
               </Link>
               <Link to="/news" className="flex-1" onClick={() => setMobileMenuOpen(false)}>

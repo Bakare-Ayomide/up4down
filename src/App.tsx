@@ -20,6 +20,8 @@ import Support from "./pages/Support";
 import Waitlist from "./pages/Waitlist";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import Channels from "./pages/Channels";
+import ChannelDetail from "./pages/ChannelDetail";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +48,8 @@ const App = () => (
             <Route path="/waitlist" element={<Waitlist />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/page/:slug" element={<CustomPage />} />
+            <Route path="/channels" element={<Channels />} />
+            <Route path="/channels/:slug" element={<ChannelDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
