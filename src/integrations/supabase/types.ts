@@ -232,6 +232,133 @@ export type Database = {
         }
         Relationships: []
       }
+      channel_members: {
+        Row: {
+          channel_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          channel_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          channel_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_members_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      channel_messages: {
+        Row: {
+          attachment_type: string | null
+          attachment_url: string | null
+          channel_id: string
+          content: string | null
+          created_at: string
+          edited_at: string | null
+          id: string
+          pinned: boolean
+          reply_to_id: string | null
+          user_display_name: string | null
+          user_id: string
+        }
+        Insert: {
+          attachment_type?: string | null
+          attachment_url?: string | null
+          channel_id: string
+          content?: string | null
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          pinned?: boolean
+          reply_to_id?: string | null
+          user_display_name?: string | null
+          user_id: string
+        }
+        Update: {
+          attachment_type?: string | null
+          attachment_url?: string | null
+          channel_id?: string
+          content?: string | null
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          pinned?: boolean
+          reply_to_id?: string | null
+          user_display_name?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_messages_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      channels: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          icon_url: string | null
+          id: string
+          is_announcement_only: boolean
+          is_public: boolean
+          member_count: number
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_announcement_only?: boolean
+          is_public?: boolean
+          member_count?: number
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_announcement_only?: boolean
+          is_public?: boolean
+          member_count?: number
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       custom_pages: {
         Row: {
           content: Json
@@ -832,6 +959,10 @@ export type Database = {
       increment_download_count: {
         Args: { item_id: string }
         Returns: undefined
+      }
+      is_channel_member: {
+        Args: { _channel_id: string; _user_id: string }
+        Returns: boolean
       }
       update_item_rating: { Args: { item_id: string }; Returns: undefined }
     }
