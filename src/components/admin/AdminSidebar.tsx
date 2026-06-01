@@ -29,6 +29,7 @@ const menuItems = [
   { id: "email", label: "Email", icon: MailOpen },
   { id: "settings", label: "Settings", icon: Sliders },
   { id: "launch", label: "Launch & SEO", icon: Rocket },
+  { id: "channels", label: "Channels", icon: MessageSquare },
   { id: "telegram", label: "Bots", icon: Bot },
 ];
 
