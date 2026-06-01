@@ -1,4 +1,4 @@
-import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen, Megaphone, Rocket, Bell, Mail, HelpCircle, Image, Code2, MailOpen, Wallet, Send, BarChart3 } from "lucide-react";
+import { LayoutGrid, Crown, FileText, Sliders, Bot, Users, CalendarDays, LogOut, Settings, ShieldCheck, Newspaper, FolderOpen, Megaphone, Rocket, Bell, Mail, HelpCircle, Image, Code2, MailOpen, Wallet, Send, BarChart3, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
