@@ -22,6 +22,7 @@ import { MediaAssetsManager } from "./MediaAssetsManager";
 import { NewsletterManager } from "./NewsletterManager";
 import { PaymentMethodsManager } from "./PaymentMethodsManager";
 import { DownloadAnalytics } from "./DownloadAnalytics";
+import { ChannelManager } from "./ChannelManager";
 import { Button } from "@/components/ui/button";
 import { Plus, Menu, X } from "lucide-react";
 
