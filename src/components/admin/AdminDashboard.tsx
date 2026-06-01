@@ -76,6 +76,7 @@ export const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
       case "launch": return <LaunchSettingsManager />;
       case "telegram": return <TelegramBotManager />;
       case "download-analytics": return <DownloadAnalytics />;
+      case "channels": return <ChannelManager />;
       default: return null;
     }
   };
