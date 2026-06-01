@@ -122,6 +122,14 @@ export const Navbar = () => {
                   Browse
                 </Button>
               </Link>
+              <Link to="/channels" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                variant={location.pathname.startsWith("/channels") ? "default" : "outline"}
+                className="w-full rounded-xl gap-1">
+                  <MessageSquare className="h-4 w-4" />
+                  Chats
+                </Button>
+              </Link>
               <Link to="/news" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
                 <Button
                 variant={location.pathname === "/news" ? "default" : "outline"}
