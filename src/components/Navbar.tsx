@@ -50,6 +50,15 @@ export const Navbar = () => {
                 Browse
               </Button>
             </Link>
+            <Link to="/channels">
+              <Button
+                variant={location.pathname.startsWith("/channels") ? "default" : "ghost"}
+                size="sm"
+                className={`font-medium rounded-full px-5 gap-1 ${location.pathname.startsWith("/channels") ? "shadow-[var(--shadow-glow)]" : "text-destructive hover:text-destructive"}`}>
+                <MessageSquare className="h-4 w-4" />
+                Channels
+              </Button>
+            </Link>
             <Link to="/news">
               <Button
                 variant={location.pathname === "/news" ? "default" : "ghost"}
